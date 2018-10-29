@@ -17,7 +17,7 @@ func main() {
 	}
 	defer engine.Close()
 
-	if err := engine.Sync2(new(dbmodels.User), new(dbmodels.Item)); err != nil {
+	if err := engine.Sync2(new(dbmodels.User)); err != nil {
 		panic(err)
 	}
 }
