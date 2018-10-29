@@ -1,16 +1,23 @@
 package main
 
 import (
+	"fmt"
+
+	"github.com/fun-dev/cloud-api/config"
 	"github.com/fun-dev/cloud-api/infrastructure/dbmodels"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 )
 
-const (
-	connectionString = "root:199507620@tcp(127.0.0.1:3306)/prac?charset=utf8&parseTime=True"
-)
-
 func main() {
+	connectionString := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True",
+		config.GetSQLUser(),
+		config.GetSQLPass(),
+		config.GetSQLHost(),
+		config.GetSQLPort(),
+		config.GetSQLDB(),
+	)
 	engine, err := xorm.NewEngine("mysql", connectionString)
 	if err != nil {
 		panic(err)
