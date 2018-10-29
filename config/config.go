@@ -3,12 +3,11 @@ package config
 import "github.com/kelseyhightower/envconfig"
 
 type Config struct {
-	SQLUser    string `envconfig:"SQL_USER" default:"root"`
-	SQLPass    string `envconfig:"SQL_PASS" default:"zJ6pF57r54JH"`
-	SQLHost    string `envconfig:"SQL_HOST" default:"127.0.0.1"`
-	SQLPort    string `envconfig:"SQL_PORT" default:"3306"`
-	SQLDB      string `envconfig:"SQL_DB" default:"prac"`
-	BucketName string `envconfig:"BUCKET_NAME" default:"gin-practice"`
+	SQLUser string `envconfig:"SQL_USER" default:"root"`
+	SQLPass string `envconfig:"SQL_PASS" default:"zJ6pF57r54JH"`
+	SQLHost string `envconfig:"SQL_HOST" default:"127.0.0.1"`
+	SQLPort string `envconfig:"SQL_PORT" default:"3306"`
+	SQLDB   string `envconfig:"SQL_DB" default:"prac"`
 }
 
 const (
@@ -39,8 +38,4 @@ func GetSQLPort() string {
 
 func GetSQLDB() string {
 	return c.SQLDB
-}
-
-func GetBucketName() string {
-	return c.BucketName
 }
