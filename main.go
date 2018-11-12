@@ -25,7 +25,7 @@ func setupRouter() *gin.Engine {
 
 	router.GET("/user/:id", usrCtrl.Get)
 	router.POST("/user", usrCtrl.Create)
-	router.PUT("/user/:id", usrCtrl.Update)
-	router.DELETE("/user/:id", usrCtrl.Delete)
+	// router.PUT("/user/:id", usrCtrl.Update)
+	// router.DELETE("/user/:id", usrCtrl.Delete)
 	return router
 }

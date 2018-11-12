@@ -72,7 +72,7 @@ func (repo userRepository) Update(user *models.User) error {
 	}
 
 	dbmodel := domainModelToDBmodel(user)
-	if _, err := session.Id(dbmodel.ID).Update(dbmodel); err != nil {
+	if _, err := session.Id(dbmodel.Id).Update(dbmodel); err != nil {
 		session.Rollback()
 		return err
 	}

@@ -4,7 +4,7 @@ import "time"
 
 // User is syncronizing database model
 type User struct {
-	ID          int64
+	Id          int64
 	IconURL     string
 	GoogleName  string
 	AccessToken string

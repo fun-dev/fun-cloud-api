@@ -1,6 +1,7 @@
 package viewmodels
 
 type User struct {
-	Name string `json:"name"`
-	Age  int    `json:"age"`
+	IconURL     string `json:"icon_url"`
+	GoogleName  string `json:"google_name"`
+	AccessToken string `json:"access_token"`
 }
