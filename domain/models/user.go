@@ -1,7 +1,8 @@
 package models
 
+// User is mapping client request model
 type User struct {
-	Id   int64
-	Name string
-	Age  int
+	IconURL     string
+	GoogleName  string
+	AccessToken string
 }
