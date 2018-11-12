@@ -19,7 +19,7 @@ func NewUserService() isrv.IUserService {
 
 // Get : return User model from token
 func (srv UserService) Get(token string) (*models.User, error) {
-	user, err := srv.Repo.FingByToken(token)
+	user, err := srv.Repo.FindByToken(token)
 	if err != nil {
 		return nil, err
 	}
