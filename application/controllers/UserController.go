@@ -24,13 +24,13 @@ func NewUserController() interfaces.IUserController {
 }
 
 func (ctrl UserController) Get(c *gin.Context) {
-	id, err := getId(c)
+	token, err := getToken(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return
 	}
 
-	model, err := ctrl.Srv.Get(id)
+	model, err := ctrl.Srv.Get(token)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return
@@ -100,6 +100,14 @@ func getId(c *gin.Context) (int64, error) {
 		return -1, err
 	}
 	return int64(id), nil
+}
+
+func getToken(c *gin.Context) (string, error) {
+	token, err := c.GetHeader("Authorization")
+	if err != nil {
+		return -1, err
+	}
+	return token, nil
 }
 
 func domainModelToViewModel(user *models.User) *viewmodels.User {
