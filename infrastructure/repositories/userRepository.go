@@ -103,7 +103,7 @@ func (repo userRepository) Delete(id int64) error {
 
 func domainModelToDBmodel(user *models.User) *dbmodels.User {
 	return &dbmodels.User{
-		IconURL:     user.IconURL,
+		IconUrl:     user.IconUrl,
 		GoogleName:  user.GoogleName,
 		AccessToken: user.AccessToken,
 	}
@@ -111,7 +111,7 @@ func domainModelToDBmodel(user *models.User) *dbmodels.User {
 
 func dbmodelToDomainModel(user *dbmodels.User) *models.User {
 	return &models.User{
-		IconURL:     user.IconURL,
+		IconUrl:     user.IconUrl,
 		GoogleName:  user.GoogleName,
 		AccessToken: user.AccessToken,
 	}

@@ -2,7 +2,7 @@ package models
 
 // User is mapping client request model
 type User struct {
-	IconURL     string
+	IconUrl     string
 	GoogleName  string
 	AccessToken string
 }

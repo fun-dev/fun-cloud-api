@@ -5,7 +5,7 @@ import "time"
 // User is syncronizing database model
 type User struct {
 	Id          int64
-	IconURL     string
+	IconUrl     string
 	GoogleName  string
 	AccessToken string
 	Created     time.Time `xorm:"created"`
