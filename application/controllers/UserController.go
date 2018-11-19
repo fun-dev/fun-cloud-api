@@ -63,7 +63,7 @@ func getToken(c *gin.Context) string {
 
 func domainModelToViewModel(user *models.User) *viewmodels.User {
 	return &viewmodels.User{
-		IconURL:     user.IconURL,
+		IconUrl:     user.IconUrl,
 		GoogleName:  user.GoogleName,
 		AccessToken: user.AccessToken,
 	}
@@ -71,7 +71,7 @@ func domainModelToViewModel(user *models.User) *viewmodels.User {
 
 func viewModelToDomainModel(user *viewmodels.User) *models.User {
 	return &models.User{
-		IconURL:     user.IconURL,
+		IconUrl:     user.IconUrl,
 		GoogleName:  user.GoogleName,
 		AccessToken: user.AccessToken,
 	}
