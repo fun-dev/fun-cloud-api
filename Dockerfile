@@ -11,5 +11,7 @@ ENV SQL_PASS pass
 ENV SQL_HOST 127.0.0.1
 ENV SQL_PORT 3306
 ENV SQL_DB prac
+ENV GOOGLE_CLIENT_ID=43129496828-cubp85rjtc5su7mlslpcg6enadreb7gk.apps.googleusercontent.com
+ENV GOOGLE_CLIENT_SECRET=j7l-0co59KBVdDlnjhFtA-oa
 EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/server"]
