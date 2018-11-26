@@ -53,7 +53,7 @@ func (repo userRepository) FindById(id int64) (*models.User, error) {
 
 func (repo userRepository) FindByToken(token string) (*models.User, error) {
 	var user dbmodels.User
-	isExist, err := repo.Engine.Where("token = ?", token).Desc("id").Get(&user)
+	isExist, err := repo.Engine.Where("token = ?", token).Get(&user)
 	if err != nil {
 		return nil, err
 	}
