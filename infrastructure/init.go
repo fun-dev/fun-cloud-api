@@ -3,25 +3,24 @@ package infrastructure
 import (
 	"github.com/fun-dev/cloud-api/infrastructure/repositories"
 	"github.com/fun-dev/cloud-api/infrastructure/repositories/interfaces"
+	"github.com/go-xorm/xorm"
 )
 
 var (
-	UserRepo interfaces.IUserRepository
+	engine        *xorm.Engine
+	UserRepo      interfaces.IUserRepository
+	ContainerRepo interfaces.IContainerRepository
 )
 
 func init() {
 	var err error
-
-	UserRepo, err = initUserRepo()
+	engine, err = repositories.NewEngine()
 	if err != nil {
 		panic(err)
 	}
-}
 
-func initUserRepo() (interfaces.IUserRepository, error) {
-	engine, err := repositories.NewEngine()
-	if err != nil {
-		return nil, err
-	}
-	return repositories.NewUserRepository(engine), nil
+	// init user repo
+	UserRepo = repositories.NewUserRepository(engine)
+	// init container repo
+	ContainerRepo = repositories.NewContainerRepository(engine)
 }
