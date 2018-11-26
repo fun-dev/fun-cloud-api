@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/fun-dev/cloud-api/domain/models"
 
@@ -24,13 +23,13 @@ func NewUserController() interfaces.IUserController {
 }
 
 func (ctrl UserController) Get(c *gin.Context) {
-	id, err := getId(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
+	token := getToken(c)
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"err": "Can't get token"})
 		return
 	}
 
-	model, err := ctrl.Srv.Get(id)
+	model, err := ctrl.Srv.Get(token)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return
@@ -57,61 +56,23 @@ func (ctrl UserController) Create(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (ctrl UserController) Update(c *gin.Context) {
-	id, err := getId(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"get id err": err.Error()})
-		return
-	}
-
-	var json viewmodels.User
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"bind json err": err.Error()})
-		return
-	}
-
-	model := viewModelToDomainModel(&json)
-	model.Id = id
-
-	if err := ctrl.Srv.Update(model); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"db update err": err.Error()})
-		return
-	}
-
-	c.Status(http.StatusOK)
-}
-
-func (ctrl UserController) Delete(c *gin.Context) {
-	id, err := getId(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
-		return
-	}
-	if err := ctrl.Srv.Delete(id); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
-		return
-	}
-	c.Status(http.StatusOK)
-}
-
-func getId(c *gin.Context) (int64, error) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return -1, err
-	}
-	return int64(id), nil
+func getToken(c *gin.Context) string {
+	token := c.GetHeader("Authorization")
+	return token
 }
 
 func domainModelToViewModel(user *models.User) *viewmodels.User {
 	return &viewmodels.User{
-		Name: user.Name,
-		Age:  user.Age,
+		IconUrl:     user.IconUrl,
+		GoogleName:  user.GoogleName,
+		AccessToken: user.AccessToken,
 	}
 }
 
 func viewModelToDomainModel(user *viewmodels.User) *models.User {
 	return &models.User{
-		Name: user.Name,
-		Age:  user.Age,
+		IconUrl:     user.IconUrl,
+		GoogleName:  user.GoogleName,
+		AccessToken: user.AccessToken,
 	}
 }

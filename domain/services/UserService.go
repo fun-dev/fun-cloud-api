@@ -17,8 +17,9 @@ func NewUserService() isrv.IUserService {
 	}
 }
 
-func (srv UserService) Get(id int64) (*models.User, error) {
-	user, err := srv.Repo.FindById(id)
+// Get : return User model from token
+func (srv UserService) Get(token string) (*models.User, error) {
+	user, err := srv.Repo.FindByToken(token)
 	if err != nil {
 		return nil, err
 	}

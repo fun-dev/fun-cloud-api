@@ -19,3 +19,5 @@ services:
       - MYSQL_USER=cloud-api
       - MYSQL_PASSWORD=7CpV#RdTgttC
     command: mysqld --character-set-server=utf8
+    ports:
+       - "3306:3306"

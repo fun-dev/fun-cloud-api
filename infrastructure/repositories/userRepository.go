@@ -51,6 +51,19 @@ func (repo userRepository) FindById(id int64) (*models.User, error) {
 	return model, nil
 }
 
+func (repo userRepository) FindByToken(token string) (*models.User, error) {
+	var user dbmodels.User
+	isExist, err := repo.Engine.Where("token = ?", token).Get(&user)
+	if err != nil {
+		return nil, err
+	}
+	if !isExist {
+		return nil, fmt.Errorf("no such user in databse")
+	}
+	model := dbmodelToDomainModel(&user)
+	return model, nil
+}
+
 func (repo userRepository) Update(user *models.User) error {
 	session := repo.Engine.NewSession()
 	defer session.Close()
@@ -90,16 +103,16 @@ func (repo userRepository) Delete(id int64) error {
 
 func domainModelToDBmodel(user *models.User) *dbmodels.User {
 	return &dbmodels.User{
-		Id:   user.Id,
-		Name: user.Name,
-		Age:  user.Age,
+		IconUrl:     user.IconUrl,
+		GoogleName:  user.GoogleName,
+		AccessToken: user.AccessToken,
 	}
 }
 
 func dbmodelToDomainModel(user *dbmodels.User) *models.User {
 	return &models.User{
-		Id:   user.Id,
-		Name: user.Name,
-		Age:  user.Age,
+		IconUrl:     user.IconUrl,
+		GoogleName:  user.GoogleName,
+		AccessToken: user.AccessToken,
 	}
 }

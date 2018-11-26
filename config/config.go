@@ -7,7 +7,7 @@ type Config struct {
 	SQLPass string `envconfig:"SQL_PASS" default:"zJ6pF57r54JH"`
 	SQLHost string `envconfig:"SQL_HOST" default:"127.0.0.1"`
 	SQLPort string `envconfig:"SQL_PORT" default:"3306"`
-	SQLDB   string `envconfig:"SQL_DB" default:"prac"`
+	SQLDB   string `envconfig:"SQL_DB" default:"cloud-api"`
 }
 
 const (
