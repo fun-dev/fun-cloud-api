@@ -1,5 +1,16 @@
 version: '3'
 services:
+  api:
+    build: .
+    environment:
+      - SQL_USER=cloud-api
+      - SQL_PASS=7CpV#RdTgttC
+      - SQL_HOST=db
+      - SQL_DB=cloud-api
+    ports:
+      - "8080:8080"
+    depends_on: 
+      - db
   db:
     image: mysql:5.7
     environment:
