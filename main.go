@@ -15,7 +15,7 @@ import (
 
 func main() {
 	router := setupRouter()
-	migrate()
+	//migrate()
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
