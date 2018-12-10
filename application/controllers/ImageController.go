@@ -21,20 +21,23 @@ func (ctrl ImageController) Get(c *gin.Context) {
 	password := "BiWsPSmo7V6v4I"
 	hub, err := registry.New(url, username, password)
 	if err != nil {
-		log.Fatal(err)
+		c.JSON(500, err.Error())
+		log.Println(err)
 		return
 	}
 	repositories, err := hub.Repositories()
 	if err != nil {
-		log.Fatal(err)
+		c.JSON(500, err.Error())
+		log.Println(err)
 		return
 	}
 	imageData := []viewmodels.Image{}
 	for _, repositry := range repositories {
 		manifest, err := hub.Manifest(repositry, "latest")
 		if err != nil {
-			log.Fatal(err)
-			return
+			c.JSON(500, err.Error())
+			log.Println(err)
+			break
 		}
 		repositoryName := manifest.Name
 		for _, history := range manifest.History {
@@ -42,8 +45,9 @@ func (ctrl ImageController) Get(c *gin.Context) {
 			var v1CompatibilityObject v1Compatibility
 			err := json.Unmarshal([]byte(v1CompatibilityJson), &v1CompatibilityObject)
 			if err != nil {
-				log.Fatal(err)
-				return
+				c.JSON(500, err.Error())
+				log.Println(err)
+				break
 			}
 			repositryDescription := v1CompatibilityObject.Container_Config.Labels.Description
 			if repositryDescription != "" {
