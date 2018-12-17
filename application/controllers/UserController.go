@@ -19,7 +19,7 @@ type UserController struct {
 
 func NewUserController() interfaces.IUserController {
 	return UserController{
-		Srv: domain.UserService,
+		Srv: domain.UserSrv,
 	}
 }
 
