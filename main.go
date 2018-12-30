@@ -6,6 +6,7 @@ import (
 	"github.com/fun-dev/cloud-api/config"
 	_ "github.com/fun-dev/cloud-api/infrastructure"
 	"github.com/fun-dev/cloud-api/infrastructure/dbmodels"
+	"github.com/fun-dev/cloud-api/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/go-xorm/xorm"
 	"log"
@@ -27,6 +28,7 @@ func setupRouter() *gin.Engine {
 	})
 
 	usrCtrl := application.UserController
+	router.Use(middleware.TokenAuthMiddleware())
 	router.GET("/users", usrCtrl.Get)
 	router.POST("/users", usrCtrl.Create)
 	return router
