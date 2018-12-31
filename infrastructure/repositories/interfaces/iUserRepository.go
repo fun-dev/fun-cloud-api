@@ -6,6 +6,4 @@ import "github.com/fun-dev/cloud-api/domain/models"
 type IUserRepository interface {
 	Insert(*models.User) error
 	FindByToken(string) (*models.User, error)
-	Update(*models.User) error
-	Delete(int64) error
 }
