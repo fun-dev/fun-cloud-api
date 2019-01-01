@@ -31,7 +31,7 @@ func setupRouter() *gin.Engine {
 	router.Use(middleware.TokenAuthMiddleware())
 	router.GET("/users", usrCtrl.Get)
 	router.POST("/users", usrCtrl.Create)
-	router.PUT("/users", usrCtrl.Create)
+	router.PUT("/users", usrCtrl.Update)
 	return router
 }
 
