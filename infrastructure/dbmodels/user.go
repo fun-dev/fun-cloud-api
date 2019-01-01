@@ -8,6 +8,7 @@ type User struct {
 	IconUrl     string
 	GoogleName  string
 	AccessToken string
+	Email       string
 	Created     time.Time `xorm:"created"`
 	Updated     time.Time `xorm:"updated"`
 }

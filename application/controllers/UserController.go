@@ -6,6 +6,7 @@ import (
 	"github.com/fun-dev/cloud-api/domain"
 	"github.com/fun-dev/cloud-api/domain/models"
 	isrv "github.com/fun-dev/cloud-api/domain/services/interfaces"
+	"github.com/fun-dev/cloud-api/middleware"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,7 +22,7 @@ func NewUserController() interfaces.IUserController {
 }
 
 func (ctrl UserController) Get(c *gin.Context) {
-	token := ""
+	token := c.GetHeader("Authorization")
 	model, err := ctrl.Srv.Get(token)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -33,12 +34,40 @@ func (ctrl UserController) Get(c *gin.Context) {
 
 func (ctrl UserController) Create(c *gin.Context) {
 	token := c.GetHeader("Authorization")
-	user := models.User{}
-	user.IconUrl = ""
-	user.GoogleName = ""
-	user.AccessToken = token
 	if token != "" {
-		err := ctrl.Srv.Add(&user)
+		claim, err := middleware.JWTValidate(token) // [Get] User Claim from JWT
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+			return
+		}
+		// [Set] User Attribute
+		user := models.User{}
+		user.AccessToken = token
+		user.Email = claim.Email
+		user.GoogleName = claim.FamilyName + claim.GivenName
+		user.IconUrl = claim.Picture
+		err = ctrl.Srv.Add(&user)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"err": "Can't get token"})
+		return
+	}
+	c.Status(http.StatusOK)
+}
+
+func (ctrl UserController) Update(c *gin.Context) {
+	token := c.GetHeader("Authorization")
+	if token != "" {
+		user, err := ctrl.Srv.Get(token)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+			return
+		}
+		// [Set] Update Access Token
+		user.AccessToken = token
+		err = ctrl.Srv.Update(user)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 			return

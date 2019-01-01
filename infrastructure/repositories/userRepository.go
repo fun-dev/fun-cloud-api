@@ -44,11 +44,26 @@ func (repo userRepository) FindByToken(token string) (*models.User, error) {
 	return model, nil
 }
 
+func (repo userRepository) Update(user *models.User) (err error) {
+	var buf dbmodels.User
+	_, err = repo.Engine.Where("email = ?", user.Email).Get(&buf)
+	if err != nil {
+		return
+	}
+	buf.AccessToken = user.Email
+	_, err = repo.Engine.ID(buf.Id).Update(&buf)
+	if err != nil {
+		return
+	}
+	return
+}
+
 func domainModelToDBmodel(user *models.User) *dbmodels.User {
 	return &dbmodels.User{
 		IconUrl:     user.IconUrl,
 		GoogleName:  user.GoogleName,
 		AccessToken: user.AccessToken,
+		Email:       user.Email,
 	}
 }
 
@@ -57,5 +72,6 @@ func dbmodelToDomainModel(user *dbmodels.User) *models.User {
 		IconUrl:     user.IconUrl,
 		GoogleName:  user.GoogleName,
 		AccessToken: user.AccessToken,
+		Email:       user.Email,
 	}
 }
