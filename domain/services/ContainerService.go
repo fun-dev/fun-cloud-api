@@ -17,12 +17,22 @@ func NewContainerService() interfaces.IContainerService {
 
 func (repo containerService) GetContainersByUserID(UserID int) ([]models.Container, error) {
 	container := models.Container{
-		ID:          999,
-		ImageID:     9999,
+		Id:          999,
+		ImageId:     9999,
 		ConnectInfo: "hogeConnection",
 		Status:      "hogehoge",
 	}
 	return []models.Container{container}, nil
+}
+
+func (repo containerService) PostContainerByID(UserID int, ContainerID int) []models.Container {
+	container := models.Container{
+		Id:          UserID,
+		ImageId:     ContainerID,
+		ConnectInfo: "gehogehoConnection",
+		Status:      "gehogeho",
+	}
+	return []models.Container{container}
 }
 
 //aaa

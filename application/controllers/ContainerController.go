@@ -27,3 +27,8 @@ func (ctrl ContainerController) Get(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, containers)
 }
+
+func (ctrl ContainerController) Post(c *gin.Context) {
+	containers := ctrl.Srv.PostContainerByID(999, 9998)
+	c.JSON(http.StatusCreated, containers)
+}

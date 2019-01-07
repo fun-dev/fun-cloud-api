@@ -6,4 +6,5 @@ import (
 
 type IContainerController interface {
 	Get(*gin.Context)
+	Post(*gin.Context)
 }
