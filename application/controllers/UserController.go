@@ -44,17 +44,17 @@ func (ctrl UserController) Create(c *gin.Context) {
 		user := models.User{}
 		user.AccessToken = token
 		user.Email = claim.Email
-		user.GoogleName = claim.FamilyName + claim.GivenName
+		user.GoogleName = claim.Name
 		user.IconUrl = claim.Picture
 		err = ctrl.Srv.Add(&user)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"err": "Can't get token"})
+		c.Status(http.StatusCreated)
 		return
 	}
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusInternalServerError, gin.H{"err": "Can't get token"})
 }
 
 func (ctrl UserController) Update(c *gin.Context) {
