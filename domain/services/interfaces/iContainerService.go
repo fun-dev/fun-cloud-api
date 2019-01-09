@@ -5,6 +5,8 @@ import (
 )
 
 type IContainerService interface {
-	GetContainersByUserID(UserID int) ([]models.Container, error)
-	PostContainerByID(UserID int, ContainerID int) []models.Container
+	GetContainersByToken(userToken string) ([]models.Container, error)
+	PostContainerByID(userID int, containerID int) []models.Container
+	PostContainerByToken(userToken, imageID string) (models.Container, error)
+	DeleteContainerByID(userToken string, containerID int64) error
 }

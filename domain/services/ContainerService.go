@@ -15,7 +15,7 @@ func NewContainerService() interfaces.IContainerService {
 	return containerService{Repo: infrastructure.ContainerRepo}
 }
 
-func (repo containerService) GetContainersByUserID(UserID int) ([]models.Container, error) {
+func (repo containerService) GetContainersByToken(token string) ([]models.Container, error) {
 	container := models.Container{
 		Id:          999,
 		ImageId:     9999,
@@ -35,4 +35,18 @@ func (repo containerService) PostContainerByID(UserID int, ContainerID int) []mo
 	return []models.Container{container}
 }
 
-//aaa
+func (repo containerService) PostContainerByToken(userToken, imageID string) (models.Container, error) {
+	container, err := infrastructure.ContainerRepo.CreateContainer(userToken, imageID)
+	if err != nil {
+		return models.Container{}, err
+	}
+	return container, nil
+}
+
+func (repo containerService) DeleteContainerByID(userToken string, containerID int64) error {
+	err := infrastructure.ContainerRepo.DeleteContainerByID(userToken, containerID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
