@@ -6,9 +6,11 @@ import (
 )
 
 var (
-	UserController interfaces.IUserController
+	UserController  interfaces.IUserController
+	ImageController controllers.ImageController
 )
 
 func init() {
 	UserController = controllers.NewUserController()
+	ImageController = controllers.ImageController{}
 }
