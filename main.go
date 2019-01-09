@@ -2,19 +2,20 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/fun-dev/cloud-api/application"
 	"github.com/fun-dev/cloud-api/config"
 	_ "github.com/fun-dev/cloud-api/infrastructure"
 	"github.com/fun-dev/cloud-api/infrastructure/dbmodels"
 	"github.com/gin-gonic/gin"
 	"github.com/go-xorm/xorm"
-	"log"
-	"net/http"
 )
 
 func main() {
 	router := setupRouter()
-	migrate()
+	//migrate()
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
@@ -29,6 +30,9 @@ func setupRouter() *gin.Engine {
 	usrCtrl := application.UserController
 	router.GET("/users", usrCtrl.Get)
 	router.POST("/users", usrCtrl.Create)
+
+	imgCtrl := application.ImageController
+	router.GET("/images", imgCtrl.Get)
 	return router
 }
 
