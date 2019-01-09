@@ -1,15 +1,14 @@
 package controllers
 
 import (
-	"net/http"
-
-	"github.com/fun-dev/cloud-api/domain/models"
-
 	"github.com/fun-dev/cloud-api/application/controllers/interfaces"
 	"github.com/fun-dev/cloud-api/application/viewmodels"
 	"github.com/fun-dev/cloud-api/domain"
+	"github.com/fun-dev/cloud-api/domain/models"
 	isrv "github.com/fun-dev/cloud-api/domain/services/interfaces"
+	"github.com/fun-dev/cloud-api/middleware"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type UserController struct {
@@ -23,12 +22,7 @@ func NewUserController() interfaces.IUserController {
 }
 
 func (ctrl UserController) Get(c *gin.Context) {
-	token := getToken(c)
-	if token == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"err": "Can't get token"})
-		return
-	}
-
+	token := c.GetHeader("Authorization")
 	model, err := ctrl.Srv.Get(token)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -39,26 +33,49 @@ func (ctrl UserController) Get(c *gin.Context) {
 }
 
 func (ctrl UserController) Create(c *gin.Context) {
-	var json viewmodels.User
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
+	token := c.GetHeader("Authorization")
+	if token != "" {
+		claim, err := middleware.JWTValidate(token) // [Get] User Claim from JWT
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+			return
+		}
+		// [Set] User Attribute
+		user := models.User{}
+		user.AccessToken = token
+		user.Email = claim.Email
+		user.GoogleName = claim.Name
+		user.IconUrl = claim.Picture
+		err = ctrl.Srv.Add(&user)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+			return
+		}
+		c.Status(http.StatusCreated)
 		return
 	}
-
-	model := viewModelToDomainModel(&json)
-
-	err := ctrl.Srv.Add(model)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
-		return
-	}
-
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusInternalServerError, gin.H{"err": "Can't get token"})
 }
 
-func getToken(c *gin.Context) string {
+func (ctrl UserController) Update(c *gin.Context) {
 	token := c.GetHeader("Authorization")
-	return token
+	if token != "" {
+		user, err := ctrl.Srv.Get(token)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+			return
+		}
+		// [Set] Update Access Token
+		user.AccessToken = token
+		err = ctrl.Srv.Update(user)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"err": "Can't get token"})
+		return
+	}
+	c.Status(http.StatusOK)
 }
 
 func domainModelToViewModel(user *models.User) *viewmodels.User {

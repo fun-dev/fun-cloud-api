@@ -7,5 +7,4 @@ type IUserRepository interface {
 	Insert(*models.User) error
 	FindByToken(string) (*models.User, error)
 	Update(*models.User) error
-	Delete(int64) error
 }

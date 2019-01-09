@@ -5,4 +5,5 @@ type User struct {
 	IconUrl     string
 	GoogleName  string
 	AccessToken string
+	Email       string
 }

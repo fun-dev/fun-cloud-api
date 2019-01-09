@@ -41,11 +41,3 @@ func (srv UserService) Update(user *models.User) error {
 	}
 	return nil
 }
-
-func (srv UserService) Delete(id int64) error {
-	err := srv.Repo.Delete(id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
