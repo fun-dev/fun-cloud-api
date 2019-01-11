@@ -6,7 +6,7 @@ services:
       - SQL_USER=cloud-api
       - SQL_PASS=7CpV#RdTgttC
       - SQL_HOST=db
-      - SQL_DB=cloud-api
+      - SQL_DB=cloud_api
     ports:
       - "8080:8080"
     depends_on: 
@@ -15,7 +15,9 @@ services:
     image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=zJ6pF57r54JH
-      - MYSQL_DATABASE=cloud-api
+      - MYSQL_DATABASE=cloud_api
       - MYSQL_USER=cloud-api
       - MYSQL_PASSWORD=7CpV#RdTgttC
     command: mysqld --character-set-server=utf8
+    ports:
+       - "3306:3306"

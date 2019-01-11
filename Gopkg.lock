@@ -2,6 +2,37 @@
 
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:a263973dee1ef5f6fb1e26f511d360871ce0b415452be0c31c7108f860386335"
+  name = "github.com/docker/distribution"
+  packages = [
+    ".",
+    "digestset",
+    "manifest",
+    "manifest/schema1",
+    "manifest/schema2",
+    "reference",
+  ]
+  pruneopts = "UT"
+  revision = "91b0f0559eb6710c574451049f8c71eb9c3952a7"
+
+[[projects]]
+  branch = "master"
+  digest = "1:4841e14252a2cecf11840bd05230412ad469709bbacfc12467e2ce5ad07f339b"
+  name = "github.com/docker/libtrust"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "aabc10ec26b754e797f9028f4589c5b7bd90dc20"
+
+[[projects]]
   branch = "master"
   digest = "1:36fe9527deed01d2a317617e59304eb2c4ce9f8a24115bcc5c2e37b3aee5bae4"
   name = "github.com/gin-contrib/sse"
@@ -23,20 +54,20 @@
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:adea5a94903eb4384abef30f3d878dc9ff6b6b5b0722da25b82e5169216dfb61"
+  digest = "1:ec6f9bf5e274c833c911923c9193867f3f18788c461f76f05f62bb1510e0ae65"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
   pruneopts = "UT"
-  revision = "d523deb1b23d913de5bdada721a6071e71283618"
-  version = "v1.4.0"
+  revision = "72cd26f257d44c1114970e19afddcd812016007e"
+  version = "v1.4.1"
 
 [[projects]]
-  digest = "1:8badd4f3fac9b3b130972a5c7d4a2f569ac317f593245ed3842a595c40ccce4c"
+  digest = "1:436e8c1845d92384995e9c93470f639b886dbbc4b49c7babf544f9cc06361198"
   name = "github.com/go-xorm/builder"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ef80bec6771b66907d34a878fe8b3914b9f5cda8"
-  version = "v0.3.2"
+  revision = "03eb88feccce3e477c318ce7f6f1b386544ab20b"
+  version = "v0.3.3"
 
 [[projects]]
   digest = "1:ec14b8c3b10e27599d7053a97bd28ef36e59cc4247f83b474bca43aaa971eab9"
@@ -55,19 +86,28 @@
   version = "v0.7.1"
 
 [[projects]]
-  digest = "1:6ba96a683441984156b05568b9d31dbc846d3336d21ac220fcc819a367dc1f65"
+  digest = "1:97df918963298c287643883209a2c3f642e6593379f97ab400c2a2e219ab647d"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   pruneopts = "UT"
-  revision = "5a0f697c9ed9d68fef0116532c6e05cfeae00e55"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
 
 [[projects]]
-  digest = "1:be97e109f627d3ba8edfef50c9c74f0d0c17cbe3a2e924a8985e4804a894f282"
+  branch = "master"
+  digest = "1:2b210e614403360f0922e86caee840c91c96c64db48aecddc33102d212cd949c"
+  name = "github.com/heroku/docker-registry-client"
+  packages = ["registry"]
+  pruneopts = "UT"
+  revision = "47ecf50fd8d4fba87593c00ca0959029c7d6b95c"
+
+[[projects]]
+  digest = "1:3e551bbb3a7c0ab2a2bf4660e7fcad16db089fdcfbb44b0199e62838038623ea"
   name = "github.com/json-iterator/go"
   packages = ["."]
   pruneopts = "UT"
-  revision = "36b14963da70d11297d313183d7e6388c8510e1e"
-  version = "1.0.0"
+  revision = "1624edc4454b8682399def8740d46db5e4362ba4"
+  version = "v1.1.5"
 
 [[projects]]
   digest = "1:edbef42561faa44c19129b68d1e109fbc1647f63239250391eadc8d0e7c9f669"
@@ -78,49 +118,130 @@
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:fa610f9fe6a93f4a75e64c83673dfff9bf1a34bbb21e6102021b6bc7850834a3"
+  digest = "1:0a69a1c0db3591fcefb47f115b224592c8dfa4368b7ba9fae509d5e16cdc95c8"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242"
+  version = "v1.0.1"
+
+[[projects]]
+  digest = "1:0981502f9816113c9c8c4ac301583841855c8cf4da8c72f696b3ebedf6d0e4e5"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
   pruneopts = "UT"
-  revision = "57fdcb988a5c543893cc61bce354a6e24ab70022"
+  revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
+  version = "v0.0.4"
 
 [[projects]]
-  digest = "1:c268acaa4a4d94a467980e5e91452eb61c460145765293dc0aed48e5e9919cc6"
+  digest = "1:33422d238f147d247752996a26574ac48dcf472976eda7f5134015f06bf16563"
+  name = "github.com/modern-go/concurrent"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
+  version = "1.0.3"
+
+[[projects]]
+  digest = "1:e32bdbdb7c377a07a9a46378290059822efdce5c8d96fe71940d87cb4f918855"
+  name = "github.com/modern-go/reflect2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
+  version = "1.0.1"
+
+[[projects]]
+  digest = "1:ee4d4af67d93cc7644157882329023ce9a7bcfce956a079069a9405521c7cc8d"
+  name = "github.com/opencontainers/go-digest"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "279bed98673dd5bef374d3b6e4b09e2af76183bf"
+  version = "v1.0.0-rc1"
+
+[[projects]]
+  digest = "1:11db38d694c130c800d0aefb502fb02519e514dc53d9804ce51d1ad25ec27db6"
+  name = "github.com/opencontainers/image-spec"
+  packages = [
+    "specs-go",
+    "specs-go/v1",
+  ]
+  pruneopts = "UT"
+  revision = "d60099175f88c47cd379c4738d158884749ed235"
+  version = "v1.0.1"
+
+[[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  pruneopts = "UT"
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:87c2e02fb01c27060ccc5ba7c5a407cc91147726f8f40b70cceeedbc52b1f3a8"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e1e72e9de974bd926e5c56f83753fba2df402ce5"
+  version = "v1.3.0"
+
+[[projects]]
+  digest = "1:972c2427413d41a1e06ca4897e8528e5a1622894050e2f527b38ddf0f343f759"
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  pruneopts = "UT"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
+
+[[projects]]
+  digest = "1:03aa6e485e528acb119fb32901cf99582c380225fc7d5a02758e08b180cb56c3"
   name = "github.com/ugorji/go"
   packages = ["codec"]
   pruneopts = "UT"
-  revision = "c88ee250d0221a57af388746f5cf03768c21d6e2"
+  revision = "b4c50a2b199d93b13dc15e78929cfb23bfdf21ab"
+  version = "v1.1.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:f22e437d9328275884d0ae018ed0de4c280871c944a5ab332aa37fd71fb5801b"
-  name = "golang.org/x/sys"
-  packages = ["unix"]
+  digest = "1:38f553aff0273ad6f367cb0a0f8b6eecbaef8dc6cb8b50e57b6a81c1d5b1e332"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
   pruneopts = "UT"
-  revision = "95b1ffbd15a57cc5abb3f04402b9e8ec0016a52c"
+  revision = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
+
+[[projects]]
+  branch = "master"
+  digest = "1:12ef3ef293a3a3930a82e5f38a3c45a1b03a9ed72dedc192d90e89d59b1f13a5"
+  name = "golang.org/x/sys"
+  packages = [
+    "unix",
+    "windows",
+  ]
+  pruneopts = "UT"
+  revision = "7fbe1cd0fcc20051e1fcb87fbabec4a1bacaaeba"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   pruneopts = "UT"
-  revision = "ae0ab99deb4dc413a2b4bd6c8bdd0eb67f1e4d06"
-  version = "v1.2.0"
+  revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
+  version = "v1.4.0"
 
 [[projects]]
-  digest = "1:1b4724d3c8125f6044925f02b485b74bfec9905cbf579d95aafd1a6c8f8447d3"
+  digest = "1:cbc72c4c4886a918d6ab4b95e347ffe259846260f99ebdd8a198c2331cf2b2e9"
   name = "gopkg.in/go-playground/validator.v8"
   packages = ["."]
   pruneopts = "UT"
-  revision = "5f57d2222ad794d0dffb07e664ea05e2ee07d60c"
-  version = "v8.18.1"
+  revision = "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
+  version = "v8.18.2"
 
 [[projects]]
-  digest = "1:cacb98d52c60c337c2ce95a7af83ba0313a93ce5e73fa9e99a96aff70776b9d3"
+  digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = "UT"
-  revision = "a5b47d31c556af34a302ce5d659e6fea44d90de0"
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -129,7 +250,9 @@
     "github.com/gin-gonic/gin",
     "github.com/go-sql-driver/mysql",
     "github.com/go-xorm/xorm",
+    "github.com/heroku/docker-registry-client/registry",
     "github.com/kelseyhightower/envconfig",
+    "github.com/stretchr/testify/assert",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

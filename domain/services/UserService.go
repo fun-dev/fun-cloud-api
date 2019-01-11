@@ -17,8 +17,9 @@ func NewUserService() isrv.IUserService {
 	}
 }
 
-func (srv UserService) Get(id int64) (*models.User, error) {
-	user, err := srv.Repo.FindById(id)
+// Get : return User model from token
+func (srv UserService) Get(token string) (*models.User, error) {
+	user, err := srv.Repo.FindByToken(token)
 	if err != nil {
 		return nil, err
 	}
@@ -35,14 +36,6 @@ func (srv UserService) Add(user *models.User) error {
 
 func (srv UserService) Update(user *models.User) error {
 	err := srv.Repo.Update(user)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (srv UserService) Delete(id int64) error {
-	err := srv.Repo.Delete(id)
 	if err != nil {
 		return err
 	}
