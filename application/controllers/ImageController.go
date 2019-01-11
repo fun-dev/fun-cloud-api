@@ -21,13 +21,13 @@ func (ctrl ImageController) Get(c *gin.Context) {
 	password := "BiWsPSmo7V6v4I"
 	hub, err := registry.New(url, username, password)
 	if err != nil {
-		c.JSON(500, err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 		log.Println(err)
 		return
 	}
 	repositories, err := hub.Repositories()
 	if err != nil {
-		c.JSON(500, err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 		log.Println(err)
 		return
 	}
@@ -35,7 +35,7 @@ func (ctrl ImageController) Get(c *gin.Context) {
 	for _, repositry := range repositories {
 		manifest, err := hub.Manifest(repositry, "latest")
 		if err != nil {
-			c.JSON(500, err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 			log.Println(err)
 			break
 		}
@@ -45,7 +45,7 @@ func (ctrl ImageController) Get(c *gin.Context) {
 			var v1CompatibilityObject v1Compatibility
 			err := json.Unmarshal([]byte(v1CompatibilityJson), &v1CompatibilityObject)
 			if err != nil {
-				c.JSON(500, err.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 				log.Println(err)
 				break
 			}
