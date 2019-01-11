@@ -1,7 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
+
+	"github.com/fun-dev/cloud-api/middleware"
 
 	"github.com/fun-dev/cloud-api/application/controllers/interfaces"
 	"github.com/fun-dev/cloud-api/application/viewmodels"
@@ -21,8 +25,12 @@ func NewContainerController() interfaces.IContainerController {
 }
 
 func (ctrl ContainerController) Get(c *gin.Context) {
-	userToken := c.GetHeader("Authorization")
-	containers, err := ctrl.Srv.GetContainersByToken(userToken)
+	uniqueUserID, err := getUniqueUserIDFromJWTInHeader(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
+	}
+
+	containers, err := ctrl.Srv.GetContainersByUniqueUserID(uniqueUserID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return
@@ -31,24 +39,58 @@ func (ctrl ContainerController) Get(c *gin.Context) {
 }
 
 func (ctrl ContainerController) Post(c *gin.Context) {
-	containerImage := viewmodels.ContainerImage{}
-	userToken := c.GetHeader("Authorization")
-	c.BindJSON(&containerImage)
-	containers, err := ctrl.Srv.PostContainerByToken(userToken, containerImage.ImageId)
+	uniqueUserID, err := getUniqueUserIDFromJWTInHeader(c)
 	if err != nil {
-		c.JSON(500, gin.H{
-			"err": err.Error(),
-		})
+		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
 	}
+
+	containerImage := viewmodels.ContainerImage{}
+	c.BindJSON(&containerImage)
+
+	containers, err := ctrl.Srv.CreateContainer(uniqueUserID, containerImage.ImageName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+	}
+
 	c.JSON(http.StatusCreated, containers)
 }
 
 func (ctrl ContainerController) Delete(c *gin.Context) {
-	userToken := c.GetHeader("Authorization")
-	err := ctrl.Srv.DeleteContainerByID(userToken, 32)
+	uniqueUserID, err := getUniqueUserIDFromJWTInHeader(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
+		return
+	}
+
+	containerIDString := c.Param("id")
+	if containerIDString == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"err": "コンテナのIDが指定されていません"})
+		return
+	}
+
+	containerIDInt, err := strconv.Atoi(containerIDString)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
+	}
+
+	err = ctrl.Srv.DeleteContainer(uniqueUserID, int64(containerIDInt))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return
 	}
 	c.Status(http.StatusNoContent)
+}
+
+// ヘッダーから JWT を取り出す関数
+// ヘッダーが空っぽならエラーを返す
+func getUniqueUserIDFromJWTInHeader(c *gin.Context) (string, error) {
+	userToken := c.GetHeader("Authorization")
+	if userToken == "" {
+		return "", fmt.Errorf("authorization headerにtokenがありません")
+	}
+	claim, err := middleware.JWTValidate(userToken)
+	if err != nil {
+		return "", err
+	}
+	return claim.Sub, nil
 }
