@@ -15,7 +15,7 @@ func NewContainerService() interfaces.IContainerService {
 	return containerService{Repo: infrastructure.ContainerRepo}
 }
 
-func (repo containerService) GetContainersByToken(token string) ([]models.Container, error) {
+func (repo containerService) GetContainersByUniqueUserID(uniqueUserID string) ([]models.Container, error) {
 	container := models.Container{
 		Id:          999,
 		ImageId:     9999,
@@ -25,26 +25,16 @@ func (repo containerService) GetContainersByToken(token string) ([]models.Contai
 	return []models.Container{container}, nil
 }
 
-func (repo containerService) PostContainerByID(UserID int, ContainerID int) []models.Container {
-	container := models.Container{
-		Id:          UserID,
-		ImageId:     ContainerID,
-		ConnectInfo: "gehogehoConnection",
-		Status:      "gehogeho",
-	}
-	return []models.Container{container}
-}
-
-func (repo containerService) PostContainerByToken(userToken, imageID string) (models.Container, error) {
-	container, err := infrastructure.ContainerRepo.CreateContainer(userToken, imageID)
+func (repo containerService) CreateContainer(uniqueUserID, imageName string) (models.Container, error) {
+	container, err := infrastructure.ContainerRepo.CreateContainer(uniqueUserID, imageName)
 	if err != nil {
 		return models.Container{}, err
 	}
 	return container, nil
 }
 
-func (repo containerService) DeleteContainerByID(userToken string, containerID int64) error {
-	err := infrastructure.ContainerRepo.DeleteContainerByID(userToken, containerID)
+func (repo containerService) DeleteContainer(uniqueUserID string, containerID int64) error {
+	err := infrastructure.ContainerRepo.DeleteContainer(uniqueUserID, containerID)
 	if err != nil {
 		return err
 	}
