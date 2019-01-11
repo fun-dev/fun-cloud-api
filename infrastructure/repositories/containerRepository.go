@@ -19,12 +19,12 @@ func (repo containerRepository) GetContainersByNamespace(namespace string) ([]mo
 	return []models.Container{}, nil
 }
 
-func (repo containerRepository) CreateContainer(userToken, imageID string) (models.Container, error) {
+func (repo containerRepository) CreateContainer(uniqueUserID, imageID string) (models.Container, error) {
 	// TODO youtangai コンテナ作成の処理を記述
 	return models.Container{}, nil
 }
 
-func (repo containerRepository) DeleteContainerByID(userToken string, containerID int64) error {
+func (repo containerRepository) DeleteContainer(uniqueUserID string, containerID int64) error {
 	// TODO youtangai コンテナ削除の処理を記述する
 	return nil
 }
