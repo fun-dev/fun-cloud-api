@@ -8,7 +8,6 @@ import (
 	"github.com/fun-dev/cloud-api/application"
 	"github.com/fun-dev/cloud-api/config"
 	"github.com/fun-dev/cloud-api/infrastructure/dbmodels"
-	"github.com/fun-dev/cloud-api/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/go-xorm/xorm"
 )
@@ -36,7 +35,7 @@ func setupRouter() *gin.Engine {
 	containerCtrl := application.ContainerController
 
 	// JWTTokenを確認するmiddlewareの登録
-	router.Use(middleware.TokenAuthMiddleware())
+	// router.Use(middleware.TokenAuthMiddleware())
 
 	// routerグループの作成
 	v1 := router.Group("/api/v1")
