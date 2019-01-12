@@ -22,5 +22,5 @@ func init() {
 	// init user repo
 	UserRepo = repositories.NewUserRepository(engine)
 	// init container repo
-	ContainerRepo = repositories.NewContainerRepository(engine)
+	ContainerRepo = repositories.NewContainerRepository()
 }
