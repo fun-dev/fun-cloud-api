@@ -6,6 +6,6 @@ import (
 
 type IContainerService interface {
 	GetContainersByUniqueUserID(uniqueUserID string) ([]models.Container, error)
-	CreateContainer(uniqueUserID, imageName string) (models.Container, error)
+	CreateContainer(uniqueUserID, imageName string) error
 	DeleteContainer(uniqueUserID string, containerID int64) error
 }

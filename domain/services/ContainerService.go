@@ -23,12 +23,12 @@ func (srv containerService) GetContainersByUniqueUserID(uniqueUserID string) ([]
 	return containers, nil
 }
 
-func (srv containerService) CreateContainer(uniqueUserID, imageName string) (models.Container, error) {
-	container, err := infrastructure.ContainerRepo.CreateContainer(uniqueUserID, imageName)
+func (srv containerService) CreateContainer(uniqueUserID, imageName string) error {
+	err := infrastructure.ContainerRepo.CreateContainer(uniqueUserID, imageName)
 	if err != nil {
-		return models.Container{}, err
+		return err
 	}
-	return container, nil
+	return nil
 }
 
 func (srv containerService) DeleteContainer(uniqueUserID string, containerID int64) error {
