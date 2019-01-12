@@ -1,22 +1,65 @@
 package repositories
 
 import (
+	"fmt"
+
+	corev1 "k8s.io/api/core/v1"
+
+	"github.com/fun-dev/cloud-api/config"
 	"github.com/fun-dev/cloud-api/domain/models"
 	"github.com/fun-dev/cloud-api/infrastructure/repositories/interfaces"
-	"github.com/go-xorm/xorm"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
-type containerRepository struct {
-	Engine *xorm.Engine
-}
+type containerRepository struct{}
 
-func NewContainerRepository(engine *xorm.Engine) interfaces.IContainerRepository {
-	return containerRepository{Engine: engine}
+func NewContainerRepository() interfaces.IContainerRepository {
+	return containerRepository{}
 }
 
 func (repo containerRepository) GetContainersByNamespace(namespace string) ([]models.Container, error) {
-	// TODO: ここにk8sからコンテナの一覧を取得する処理を記述する
-	return []models.Container{}, nil
+	// kubeconfigのパス取得
+	kubeConfigPath := config.GetKubeConfigPath()
+
+	// kubeconfig内の現在のコンテキストを利用する
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+	if err != nil {
+		return nil, err
+	}
+
+	// クライアントセットを作成
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, err
+	}
+
+	pods, err := clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	returnContainers := make([]models.Container, 0, len(pods.Items))
+
+	for _, pod := range pods.Items {
+		containers := pod.Spec.Containers
+		if len(containers) != 1 {
+			continue
+		}
+		container := containers[0]
+
+		item := models.Container{
+			UID:         string(pod.GetUID()),
+			ImageName:   container.Image,
+			ConnectInfo: getWebSocketPath(pod.GetSelfLink()),
+			Status:      getPodState(pod),
+		}
+
+		returnContainers = append(returnContainers, item)
+	}
+
+	return returnContainers, nil
 }
 
 func (repo containerRepository) CreateContainer(uniqueUserID, imageID string) (models.Container, error) {
@@ -27,4 +70,22 @@ func (repo containerRepository) CreateContainer(uniqueUserID, imageID string) (m
 func (repo containerRepository) DeleteContainer(uniqueUserID string, containerID int64) error {
 	// TODO youtangai コンテナ削除の処理を記述する
 	return nil
+}
+
+func getWebSocketPath(selfLink string) string {
+	return fmt.Sprintf("ws://%s%s/exec?container=my-nginx&stdin=1&stdout=1&stderr=1&tty=1&command=/bin/bash", config.GetKubeIP(), selfLink)
+}
+
+func getPodState(pod corev1.Pod) string {
+	state := pod.Status.ContainerStatuses[0].State
+	if state.Waiting != nil {
+		return "creating"
+	}
+	if state.Running != nil {
+		return "running"
+	}
+	if state.Terminated != nil {
+		return "halted"
+	}
+	return ""
 }
