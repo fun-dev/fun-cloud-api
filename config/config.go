@@ -9,6 +9,7 @@ type Config struct {
 	SQLPort        string `envconfig:"SQL_PORT" default:"3306"`
 	SQLDB          string `envconfig:"SQL_DB" default:"cloud-api"`
 	KubeConfigPath string `envconfig:"K8S_CONFIG_PATH"`
+	KubeIP         string `envconfig:"K8S_IP"`
 }
 
 const (
@@ -43,4 +44,8 @@ func GetSQLDB() string {
 
 func GetKubeConfigPath() string {
 	return c.KubeConfigPath
+}
+
+func GetKubeIP() string {
+	return c.KubeIP
 }
