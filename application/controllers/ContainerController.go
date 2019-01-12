@@ -44,8 +44,11 @@ func (ctrl ContainerController) Post(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
 	}
 
-	containerImage := viewmodels.ContainerImage{}
-	c.BindJSON(&containerImage)
+	var containerImage viewmodels.ContainerImage
+	err = c.BindJSON(&containerImage)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
+	}
 
 	err = ctrl.Srv.CreateContainer(uniqueUserID, containerImage.ImageName)
 	if err != nil {
