@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/fun-dev/cloud-api/middleware"
 
@@ -65,18 +64,13 @@ func (ctrl ContainerController) Delete(c *gin.Context) {
 		return
 	}
 
-	containerIDString := c.Param("id")
+	containerID := c.Param("id")
 	if containerIDString == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"err": "コンテナのIDが指定されていません"})
 		return
 	}
 
-	containerIDInt, err := strconv.Atoi(containerIDString)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
-	}
-
-	err = ctrl.Srv.DeleteContainer(uniqueUserID, int64(containerIDInt))
+	err = ctrl.Srv.DeleteContainer(uniqueUserID, containerID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return

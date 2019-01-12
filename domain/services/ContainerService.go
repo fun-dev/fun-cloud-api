@@ -31,7 +31,7 @@ func (srv containerService) CreateContainer(uniqueUserID, imageName string) erro
 	return nil
 }
 
-func (srv containerService) DeleteContainer(uniqueUserID string, containerID int64) error {
+func (srv containerService) DeleteContainer(uniqueUserID, containerID string) error {
 	err := infrastructure.ContainerRepo.DeleteContainer(uniqueUserID, containerID)
 	if err != nil {
 		return err
