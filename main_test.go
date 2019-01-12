@@ -82,3 +82,19 @@ func TestContainerPost(t *testing.T) {
 	t.Log(string(body))
 	assert.Equal(t, http.StatusCreated, res.StatusCode)
 }
+
+// 任意のタイミングで実行できないテストなのでコメントアウト
+// func TestContainerDelete(t *testing.T) {
+// 	router := setupRouter()
+
+// 	w := httptest.NewRecorder()
+// 	req := httptest.NewRequest("DELETE", "/api/v1/containers/20190112203809", nil)
+
+// 	req.Header.Set("Authorization", testJWT)
+
+// 	router.ServeHTTP(w, req)
+
+// 	res := w.Result()
+
+// 	assert.Equal(t, http.StatusNoContent, res.StatusCode)
+// }
