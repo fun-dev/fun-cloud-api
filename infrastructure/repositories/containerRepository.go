@@ -3,11 +3,13 @@ package repositories
 import (
 	"fmt"
 
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 
 	"github.com/fun-dev/cloud-api/config"
 	"github.com/fun-dev/cloud-api/domain/models"
 	"github.com/fun-dev/cloud-api/infrastructure/repositories/interfaces"
+	"github.com/fun-dev/cloud-api/util"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -67,9 +69,60 @@ func (repo containerRepository) GetContainersByNamespace(namespace string) ([]mo
 	return returnContainers, nil
 }
 
-func (repo containerRepository) CreateContainer(uniqueUserID, imageID string) (models.Container, error) {
+func (repo containerRepository) CreateContainer(uniqueUserID, imageName string) error {
 	// TODO youtangai コンテナ作成の処理を記述
-	return models.Container{}, nil
+	kubeConfigPath := config.GetKubeConfigPath()
+
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+	if err != nil {
+		return err
+	}
+
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return err
+	}
+
+	deploymentsClient := clientset.AppsV1().Deployments(uniqueUserID)
+
+	now := util.GetNowString()
+
+	deployment := &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: now,
+		},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: util.Int32Ptr(1),
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"container": now,
+				},
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						"container": now,
+					},
+				},
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Name:  now,
+							Image: imageName,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	fmt.Println("namespace:", uniqueUserID, "imagename:", imageName)
+	_, err = deploymentsClient.Create(deployment)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (repo containerRepository) DeleteContainer(uniqueUserID string, containerID int64) error {
