@@ -5,6 +5,10 @@ import (
 	"testing"
 )
 
+const (
+	uniqueUserID = "108898913206828981410"
+)
+
 func Test_containerRepository_GetContainersByNamespace(t *testing.T) {
 	repo := NewContainerRepository()
 	containers, err := repo.GetContainersByNamespace("default")
@@ -16,8 +20,16 @@ func Test_containerRepository_GetContainersByNamespace(t *testing.T) {
 
 func Test_containerRepository_CreateContainer(t *testing.T) {
 	repo := NewContainerRepository()
-	err := repo.CreateContainer("108898913206828981410", "nginx:latest")
+	err := repo.CreateContainer(uniqueUserID, "nginx:latest")
 	if err != nil {
 		t.Fatal(err)
 	}
 }
+
+// func Test_containerRepository_DeleteContainer(t *testing.T) {
+// 	repo := NewContainerRepository()
+// 	err := repo.DeleteContainer(uniqueUserID, "20190112201521")
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
+// }
