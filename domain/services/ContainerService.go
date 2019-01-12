@@ -15,17 +15,15 @@ func NewContainerService() interfaces.IContainerService {
 	return containerService{Repo: infrastructure.ContainerRepo}
 }
 
-func (repo containerService) GetContainersByUniqueUserID(uniqueUserID string) ([]models.Container, error) {
-	container := models.Container{
-		Id:          999,
-		ImageId:     9999,
-		ConnectInfo: "hogeConnection",
-		Status:      "hogehoge",
+func (srv containerService) GetContainersByUniqueUserID(uniqueUserID string) ([]models.Container, error) {
+	containers, err := srv.Repo.GetContainersByNamespace(uniqueUserID)
+	if err != nil {
+		return nil, err
 	}
-	return []models.Container{container}, nil
+	return containers, nil
 }
 
-func (repo containerService) CreateContainer(uniqueUserID, imageName string) (models.Container, error) {
+func (srv containerService) CreateContainer(uniqueUserID, imageName string) (models.Container, error) {
 	container, err := infrastructure.ContainerRepo.CreateContainer(uniqueUserID, imageName)
 	if err != nil {
 		return models.Container{}, err
@@ -33,7 +31,7 @@ func (repo containerService) CreateContainer(uniqueUserID, imageName string) (mo
 	return container, nil
 }
 
-func (repo containerService) DeleteContainer(uniqueUserID string, containerID int64) error {
+func (srv containerService) DeleteContainer(uniqueUserID string, containerID int64) error {
 	err := infrastructure.ContainerRepo.DeleteContainer(uniqueUserID, containerID)
 	if err != nil {
 		return err
