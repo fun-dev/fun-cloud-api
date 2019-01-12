@@ -35,15 +35,20 @@ func (repo containerRepository) GetContainersByNamespace(namespace string) ([]mo
 		return nil, err
 	}
 
+	// podの一覧取得
 	pods, err := clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
+	// 返却用スライスの生成
 	returnContainers := make([]models.Container, 0, len(pods.Items))
 
 	for _, pod := range pods.Items {
+		// pod内のコンテナ一覧取得
 		containers := pod.Spec.Containers
+
+		// コンテナが1つであることを期待する
 		if len(containers) != 1 {
 			continue
 		}
