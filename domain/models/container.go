@@ -1,8 +1,8 @@
 package models
 
 type Container struct {
-	Id          int    `json:id`
-	ImageId     int    `json:image_id`
+	UID         string `json:id`
+	ImageName   string `json:image_id`
 	ConnectInfo string `json:connect_info`
 	Status      string `json:status`
 }
