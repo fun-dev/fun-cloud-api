@@ -125,8 +125,30 @@ func (repo containerRepository) CreateContainer(uniqueUserID, imageName string) 
 	return nil
 }
 
-func (repo containerRepository) DeleteContainer(uniqueUserID string, containerID int64) error {
+func (repo containerRepository) DeleteContainer(uniqueUserID, containerID string) error {
 	// TODO youtangai コンテナ削除の処理を記述する
+	kubeConfigPath := config.GetKubeConfigPath()
+
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+	if err != nil {
+		return err
+	}
+
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return err
+	}
+
+	deploymentsClient := clientset.AppsV1().Deployments(uniqueUserID)
+
+	deletePolicy := metav1.DeletePropagationForeground
+	err = deploymentsClient.Delete(containerID, &metav1.DeleteOptions{
+		PropagationPolicy: &deletePolicy,
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
