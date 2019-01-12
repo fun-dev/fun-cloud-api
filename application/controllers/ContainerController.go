@@ -65,7 +65,7 @@ func (ctrl ContainerController) Delete(c *gin.Context) {
 	}
 
 	containerID := c.Param("id")
-	if containerIDString == "" {
+	if containerID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"err": "コンテナのIDが指定されていません"})
 		return
 	}
