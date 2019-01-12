@@ -47,12 +47,12 @@ func (ctrl ContainerController) Post(c *gin.Context) {
 	containerImage := viewmodels.ContainerImage{}
 	c.BindJSON(&containerImage)
 
-	containers, err := ctrl.Srv.CreateContainer(uniqueUserID, containerImage.ImageName)
+	err = ctrl.Srv.CreateContainer(uniqueUserID, containerImage.ImageName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 	}
 
-	c.JSON(http.StatusCreated, containers)
+	c.Status(http.StatusCreated)
 }
 
 func (ctrl ContainerController) Delete(c *gin.Context) {
