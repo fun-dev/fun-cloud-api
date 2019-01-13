@@ -1,17 +1,10 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/fun-dev/cloud-api/application/viewmodels"
-
-	"github.com/fun-dev/cloud-api/domain/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,60 +21,60 @@ func TestHealthCheck(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
-func TestContainerGet(t *testing.T) {
-	router := setupRouter()
+// func TestContainerGet(t *testing.T) {
+// 	router := setupRouter()
 
-	w := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/api/v1/containers", nil)
+// 	w := httptest.NewRecorder()
+// 	req := httptest.NewRequest("GET", "/api/v1/containers", nil)
 
-	req.Header.Set("Authorization", testJWT)
+// 	req.Header.Set("Authorization", testJWT)
 
-	router.ServeHTTP(w, req)
+// 	router.ServeHTTP(w, req)
 
-	res := w.Result()
-	defer res.Body.Close()
-	assert.Equal(t, http.StatusOK, res.StatusCode)
+// 	res := w.Result()
+// 	defer res.Body.Close()
+// 	assert.Equal(t, http.StatusOK, res.StatusCode)
 
-	var containers []models.Container
+// 	var containers []models.Container
 
-	data, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
+// 	data, err := ioutil.ReadAll(res.Body)
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
 
-	json.Unmarshal(data, &containers)
-	fmt.Println(containers)
-}
+// 	json.Unmarshal(data, &containers)
+// 	fmt.Println(containers)
+// }
 
-func TestContainerPost(t *testing.T) {
-	router := setupRouter()
+// func TestContainerPost(t *testing.T) {
+// 	router := setupRouter()
 
-	image := viewmodels.ContainerImage{
-		ImageName: "nginx:latest",
-	}
+// 	image := viewmodels.ContainerImage{
+// 		ImageName: "nginx:latest",
+// 	}
 
-	data, err := json.Marshal(image)
-	if err != nil {
-		t.Fatal(err)
-	}
+// 	data, err := json.Marshal(image)
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
 
-	w := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/api/v1/containers", bytes.NewBuffer(data))
+// 	w := httptest.NewRecorder()
+// 	req := httptest.NewRequest("POST", "/api/v1/containers", bytes.NewBuffer(data))
 
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", testJWT)
+// 	req.Header.Set("Content-Type", "application/json")
+// 	req.Header.Set("Authorization", testJWT)
 
-	router.ServeHTTP(w, req)
+// 	router.ServeHTTP(w, req)
 
-	res := w.Result()
-	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(string(body))
-	assert.Equal(t, http.StatusCreated, res.StatusCode)
-}
+// 	res := w.Result()
+// 	defer res.Body.Close()
+// 	body, err := ioutil.ReadAll(res.Body)
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
+// 	t.Log(string(body))
+// 	assert.Equal(t, http.StatusCreated, res.StatusCode)
+// }
 
 // 任意のタイミングで実行できないテストなのでコメントアウト
 // func TestContainerDelete(t *testing.T) {
