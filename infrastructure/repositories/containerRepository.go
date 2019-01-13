@@ -87,6 +87,27 @@ func (repo containerRepository) CreateContainer(uniqueUserID, imageName string) 
 		return err
 	}
 
+	// namespaceの一覧取得
+	namespaces, err := clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
+	if err != nil {
+		return err
+	}
+
+	namespaceSlice := namespaces.Items
+	currentNameSpace := &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: uniqueUserID,
+		},
+	}
+
+	// namespaceがなければ作る
+	if !isNameSpaceExist(&namespaceSlice, currentNameSpace) {
+		_, err := clientset.CoreV1().Namespaces().Create(currentNameSpace)
+		if err != nil {
+			return err
+		}
+	}
+
 	deploymentsClient := clientset.AppsV1().Deployments(uniqueUserID)
 
 	now := util.GetNowString()
@@ -172,4 +193,13 @@ func getPodState(pod corev1.Pod) string {
 		return "halted"
 	}
 	return ""
+}
+
+func isNameSpaceExist(list *[]corev1.Namespace, current *corev1.Namespace) bool {
+	for _, item := range *list {
+		if item.ObjectMeta.Name == current.ObjectMeta.Name {
+			return true
+		}
+	}
+	return false
 }
