@@ -8,6 +8,7 @@ import (
 	"github.com/fun-dev/cloud-api/application"
 	"github.com/fun-dev/cloud-api/config"
 	"github.com/fun-dev/cloud-api/infrastructure/dbmodels"
+	"github.com/fun-dev/cloud-api/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-xorm/xorm"
@@ -42,6 +43,7 @@ func setupRouter() *gin.Engine {
 	corsConfig.AllowAllOrigins = true
 	corsConfig.AddAllowHeaders("Authorization")
 	router.Use(cors.New(corsConfig))
+	router.Use(middleware.Options)
 
 	// routerグループの作成
 	v1 := router.Group("/api/v1")
