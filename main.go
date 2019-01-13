@@ -38,7 +38,10 @@ func setupRouter() *gin.Engine {
 	// JWTTokenを確認するmiddlewareの登録
 	// router.Use(middleware.TokenAuthMiddleware())
 	// cors対策
-	router.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AddAllowHeaders("Authorization")
+	router.Use(cors.New(corsConfig))
 
 	// routerグループの作成
 	v1 := router.Group("/api/v1")
