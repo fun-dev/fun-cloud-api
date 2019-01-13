@@ -27,6 +27,7 @@ func (ctrl ContainerController) Get(c *gin.Context) {
 	uniqueUserID, err := getUniqueUserIDFromJWTInHeader(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
+		return
 	}
 
 	containers, err := ctrl.Srv.GetContainersByUniqueUserID(uniqueUserID)
@@ -41,17 +42,20 @@ func (ctrl ContainerController) Post(c *gin.Context) {
 	uniqueUserID, err := getUniqueUserIDFromJWTInHeader(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
+		return
 	}
 
 	var containerImage viewmodels.ContainerImage
 	err = c.BindJSON(&containerImage)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
+		return
 	}
 
 	err = ctrl.Srv.CreateContainer(uniqueUserID, containerImage.ImageName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
+		return
 	}
 
 	c.Status(http.StatusCreated)
