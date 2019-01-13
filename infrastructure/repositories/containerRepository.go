@@ -57,7 +57,7 @@ func (repo containerRepository) GetContainersByNamespace(namespace string) ([]mo
 		container := containers[0]
 
 		item := models.Container{
-			UID:         string(pod.GetUID()),
+			UID:         pod.GetName(), //本来podが持っているuidではない
 			ImageName:   container.Image,
 			ConnectInfo: getWebSocketPath(pod.GetSelfLink()),
 			Status:      getPodState(pod),
