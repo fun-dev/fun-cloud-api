@@ -15,6 +15,10 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
+const (
+	labelName = "pod-name"
+)
+
 type containerRepository struct{}
 
 func NewContainerRepository() interfaces.IContainerRepository {
@@ -57,9 +61,9 @@ func (repo containerRepository) GetContainersByNamespace(namespace string) ([]mo
 		container := containers[0]
 
 		item := models.Container{
-			UID:         pod.GetName(), //本来podが持っているuidではない
+			UID:         pod.ObjectMeta.Labels[labelName], //本来podが持っているuidではない
 			ImageName:   container.Image,
-			ConnectInfo: getWebSocketPath(pod.GetSelfLink()),
+			ConnectInfo: getWebSocketPath(pod.GetSelfLink(), container.Name),
 			Status:      getPodState(pod),
 		}
 
@@ -95,13 +99,13 @@ func (repo containerRepository) CreateContainer(uniqueUserID, imageName string) 
 			Replicas: util.Int32Ptr(1),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"container": now,
+					labelName: now,
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"container": now,
+						labelName: now,
 					},
 				},
 				Spec: corev1.PodSpec{
@@ -152,8 +156,8 @@ func (repo containerRepository) DeleteContainer(uniqueUserID, containerID string
 	return nil
 }
 
-func getWebSocketPath(selfLink string) string {
-	return fmt.Sprintf("ws://%s%s/exec?container=my-nginx&stdin=1&stdout=1&stderr=1&tty=1&command=/bin/bash", config.GetKubeIP(), selfLink)
+func getWebSocketPath(selfLink, container string) string {
+	return fmt.Sprintf("ws://%s%s/exec?container=%s&stdin=1&stdout=1&stderr=1&tty=1&command=/bin/bash", config.GetKubeIP(), selfLink, container)
 }
 
 func getPodState(pod corev1.Pod) string {
