@@ -26,6 +26,9 @@ func NewContainerRepository() interfaces.IContainerRepository {
 }
 
 func (repo containerRepository) GetContainersByNamespace(namespace string) ([]models.Container, error) {
+	if namespace == "" {
+		return nil, fmt.Errorf("api:err:不正なnamespaceです")
+	}
 	// kubeconfigのパス取得
 	kubeConfigPath := config.GetKubeConfigPath()
 

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/fun-dev/cloud-api/middleware"
@@ -29,6 +30,7 @@ func (ctrl ContainerController) Get(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
 		return
 	}
+	log.Println("api:info:uniqueUserID:", uniqueUserID)
 
 	containers, err := ctrl.Srv.GetContainersByUniqueUserID(uniqueUserID)
 	if err != nil {
@@ -92,6 +94,10 @@ func getUniqueUserIDFromJWTInHeader(c *gin.Context) (string, error) {
 	claim, err := middleware.JWTValidate(userToken)
 	if err != nil {
 		return "", err
+	}
+	sub := claim.Sub
+	if sub == "" {
+		return "", fmt.Errorf("subの取得に失敗しました．jwtの期限が切れている可能性があります")
 	}
 	return claim.Sub, nil
 }

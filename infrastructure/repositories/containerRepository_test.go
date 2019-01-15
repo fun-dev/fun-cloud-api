@@ -16,6 +16,10 @@ func Test_containerRepository_GetContainersByNamespace(t *testing.T) {
 		t.Fatal(err)
 	}
 	fmt.Printf("%+v\n", containers)
+	_, err = repo.GetContainersByNamespace("")
+	if err == nil {
+		t.Fatal("errになるべきです", err)
+	}
 }
 
 func Test_containerRepository_CreateContainer(t *testing.T) {
