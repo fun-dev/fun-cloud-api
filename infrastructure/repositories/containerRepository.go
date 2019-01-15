@@ -178,7 +178,7 @@ func (repo containerRepository) DeleteContainer(uniqueUserID, containerID string
 }
 
 func getWebSocketPath(selfLink, container string) string {
-	return fmt.Sprintf("ws://%s%s/exec?container=%s&stdin=1&stdout=1&stderr=1&tty=1&command=/bin/bash", config.GetKubeIP(), selfLink, container)
+	return fmt.Sprintf("ws://%s?connect_info=wss://%s%s/exec?container=%s%%26stdin=1%%26stdout=1%%26stderr=1%%26tty=1%%26command=/bin/bash", config.GetProxyAddr(), config.GetKubeIP(), selfLink, container)
 }
 
 func getPodState(pod corev1.Pod) string {

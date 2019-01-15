@@ -11,7 +11,7 @@ const (
 
 func Test_containerRepository_GetContainersByNamespace(t *testing.T) {
 	repo := NewContainerRepository()
-	containers, err := repo.GetContainersByNamespace("default")
+	containers, err := repo.GetContainersByNamespace("front")
 	if err != nil {
 		t.Fatal(err)
 	}

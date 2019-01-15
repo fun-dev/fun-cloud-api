@@ -10,6 +10,7 @@ type Config struct {
 	SQLDB          string `envconfig:"SQL_DB" default:"cloud-api"`
 	KubeConfigPath string `envconfig:"K8S_CONFIG_PATH"`
 	KubeIP         string `envconfig:"K8S_IP"`
+	ProxyAddr      string `envconfig:"PROXY_ADDR"`
 }
 
 const (
@@ -48,4 +49,8 @@ func GetKubeConfigPath() string {
 
 func GetKubeIP() string {
 	return c.KubeIP
+}
+
+func GetProxyAddr() string {
+	return c.ProxyAddr
 }
