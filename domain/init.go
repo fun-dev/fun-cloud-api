@@ -6,9 +6,17 @@ import (
 )
 
 var (
-	UserService interfaces.IUserService
+	UserSrv      interfaces.IUserService
+	ContainerSrv interfaces.IContainerService
 )
 
 func init() {
-	UserService = services.NewUserService()
+	var err error
+
+	if err != nil {
+		panic(err)
+	}
+
+	UserSrv = services.NewUserService()
+	ContainerSrv = services.NewContainerService()
 }
