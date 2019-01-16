@@ -27,6 +27,7 @@ func NewContainerController() interfaces.IContainerController {
 func (ctrl ContainerController) Get(c *gin.Context) {
 	uniqueUserID, err := getUniqueUserIDFromJWTInHeader(c)
 	if err != nil {
+		fmt.Println("unauthorization err:", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
 		return
 	}
@@ -34,6 +35,7 @@ func (ctrl ContainerController) Get(c *gin.Context) {
 
 	containers, err := ctrl.Srv.GetContainersByUniqueUserID(uniqueUserID)
 	if err != nil {
+		fmt.Println("bad request err:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return
 	}
@@ -43,6 +45,7 @@ func (ctrl ContainerController) Get(c *gin.Context) {
 func (ctrl ContainerController) Post(c *gin.Context) {
 	uniqueUserID, err := getUniqueUserIDFromJWTInHeader(c)
 	if err != nil {
+		fmt.Println("unahtorized err:", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
 		return
 	}
@@ -50,12 +53,14 @@ func (ctrl ContainerController) Post(c *gin.Context) {
 	var containerImage viewmodels.ContainerImage
 	err = c.BindJSON(&containerImage)
 	if err != nil {
+		fmt.Println("bad request err:cant bind json:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return
 	}
 
 	err = ctrl.Srv.CreateContainer(uniqueUserID, containerImage.ImageName)
 	if err != nil {
+		fmt.Println("internal server err: cant create container:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 		return
 	}
@@ -66,18 +71,21 @@ func (ctrl ContainerController) Post(c *gin.Context) {
 func (ctrl ContainerController) Delete(c *gin.Context) {
 	uniqueUserID, err := getUniqueUserIDFromJWTInHeader(c)
 	if err != nil {
+		fmt.Println("unauthorized err", err)
 		c.JSON(http.StatusUnauthorized, gin.H{"err": err.Error()})
 		return
 	}
 
 	containerID := c.Param("id")
 	if containerID == "" {
+		fmt.Println("bad request err: container id is not specified:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"err": "コンテナのIDが指定されていません"})
 		return
 	}
 
 	err = ctrl.Srv.DeleteContainer(uniqueUserID, containerID)
 	if err != nil {
+		fmt.Println("internal server err: cant delete container:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 		return
 	}
