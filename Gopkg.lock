@@ -499,7 +499,7 @@
   revision = "fa6ddc151d63306b3540a37d910a07b181e4a474"
 
 [[projects]]
-  digest = "1:20f641257f6c0c69ddf455a15b63b20bac524b08d90745da796d633724758bac"
+  digest = "1:d250d0523975c61fb2f2c2de4979e268c74965bf7259a6b8f107f3a99a9b1a42"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
@@ -542,6 +542,7 @@
     "pkg/apis/clientauthentication/v1beta1",
     "pkg/version",
     "plugin/pkg/client/auth/exec",
+    "plugin/pkg/client/auth/oidc",
     "rest",
     "rest/watch",
     "tools/auth",
@@ -593,6 +594,7 @@
     "k8s.io/api/core/v1",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/client-go/kubernetes",
+    "k8s.io/client-go/plugin/pkg/client/auth/oidc",
     "k8s.io/client-go/tools/clientcmd",
   ]
   solver-name = "gps-cdcl"
