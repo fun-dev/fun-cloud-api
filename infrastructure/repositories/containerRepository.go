@@ -115,6 +115,7 @@ func (repo containerRepository) CreateContainer(uniqueUserID, imageName string) 
 
 	now := util.GetNowString()
 
+	isPrivileged := true
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: now,
@@ -137,6 +138,9 @@ func (repo containerRepository) CreateContainer(uniqueUserID, imageName string) 
 						{
 							Name:  now,
 							Image: imageName,
+							SecurityContext: &corev1.SecurityContext{
+								Privileged: &isPrivileged,
+							},
 						},
 					},
 				},
