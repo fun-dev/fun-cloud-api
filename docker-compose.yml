@@ -7,7 +7,7 @@ services:
       - SQL_PASS=7CpV#RdTgttC
       - SQL_HOST=db
       - SQL_DB=cloud_api
-      - PROXY_ADDR=192.168.62.1:8081
+      - PROXY_ADDR=localhost:8888
     ports:
       - "8080:8080"
     depends_on: 
