@@ -141,6 +141,7 @@ func (repo containerRepository) CreateContainer(uniqueUserID, imageName string) 
 							SecurityContext: &corev1.SecurityContext{
 								Privileged: &isPrivileged,
 							},
+							ImagePullPolicy: corev1.PullNever,
 						},
 					},
 				},
