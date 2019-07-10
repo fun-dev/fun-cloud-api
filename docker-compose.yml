@@ -7,8 +7,8 @@ services:
       - SQL_PASS=7CpV#RdTgttC
       - SQL_HOST=db
       - SQL_DB=cloud_api
-      - K8S_IP=34.80.53.82:6443
-      - PROXY_ADDR=34.85.115.170:8081
+      - K8S_IP=10.24.194.71:6443
+      - PROXY_ADDR=10.6.16.228:8081
     ports:
       - "8080:8080"
     depends_on: 
