@@ -1,11 +1,8 @@
 package interfaces
 
-import (
-"github.com/fun-dev/cloud-api/domain/models"
-)
 
 type IContainerService interface {
-	GetContainersByUniqueUserID(uniqueUserID string) ([]models.Container, error)
+	GetContainersByUniqueUserID(uniqueUserID string) (string, error)
 	CreateContainer(uniqueUserID, imageName string) error
 	DeleteContainer(uniqueUserID, containerID string) error
 }
