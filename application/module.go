@@ -1,18 +1,14 @@
 package application
 
 import (
-	"github.com/fun-dev/cloud-api/application/controllers"
-	"github.com/fun-dev/cloud-api/application/controllers/interfaces"
+	"github.com/fun-dev/ccms-poc/application/controllers"
+	"github.com/fun-dev/ccms-poc/application/controllers/interfaces"
 )
 
 var (
-	UserController      interfaces.IUserController
-	ContainerController interfaces.IContainerController
-	ImageController     controllers.ImageController
+	ContainerCtrl interfaces.IContainerController
 )
 
 func init() {
-	UserController = controllers.NewUserController()
-	ContainerController = controllers.NewContainerController()
-	ImageController = controllers.ImageController{}
+	ContainerCtrl = controllers.NewContainerController()
 }
