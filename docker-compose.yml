@@ -5,6 +5,14 @@ services:
     build: .
     ports:
       - "3001":"80"
+  redis:
+    container_name: "redis"
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
   nosql:
     container_name: "nosql"
     image: mongo
@@ -22,4 +30,6 @@ volumes:
   mongo-db:
     driver: local
   mongo-config:
+    driver: local
+  redis-data:
     driver: local
