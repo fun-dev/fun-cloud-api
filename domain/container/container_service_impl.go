@@ -1,40 +1,49 @@
 package container
 
 import (
-	"github.com/fun-dev/cloud-api/domain/models"
-	"github.com/fun-dev/cloud-api/domain/services/interfaces"
-	"github.com/fun-dev/cloud-api/infrastructure"
-	irepo "github.com/fun-dev/cloud-api/infrastructure/repositories/interfaces"
+	"github.com/fun-dev/ccms-poc/domain/container/interfaces"
+	"github.com/fun-dev/ccms-poc/util/config"
+	"github.com/fun-dev/ccms-poc/util/kubectl"
 )
 
 type containerService struct {
-	Repo irepo.IContainerRepository
+	Repo    interfaces.IContainerRepository
+	Kubectl kubectl.IKubectl
 }
 
-func NewContainerService() interfaces.IContainerService {
-	return containerService{Repo: infrastructure.ContainerRepo}
+func NewContainerService(repo interfaces.IContainerRepository, kubectl kubectl.IKubectl) interfaces.IContainerService {
+	return &containerService{
+		Repo: repo,
+		Kubectl: kubectl,
+	}
 }
 
-func (srv containerService) GetContainersByUniqueUserID(uniqueUserID string) ([]models.Container, error) {
-	containers, err := srv.Repo.GetContainersByNamespace(uniqueUserID)
+func (c *containerService) GetContainersByUserID(userID, podName string) ([]*Container, error) {
+	targetNamespace := userID
+	pods, err := c.Kubectl.GetContainer(targetNamespace)
 	if err != nil {
 		return nil, err
 	}
-	return containers, nil
+	result := make([]*Container, len(pods.Items))
+	topContainer := 0
+	for index, pod := range pods.Items {
+		result[index] = &Container{
+			UID:         targetNamespace,
+			ImageName:   pod.Spec.Containers[topContainer].Image,
+			PodName:     pod.Name,
+			ConnectInfo: config.Ext.CreateK8SWebsocketProxyPath(pod.ObjectMeta.SelfLink),
+			Status:      pod.Status.ContainerStatuses[topContainer].State.String(),
+		}
+	}
+	return result, nil
 }
 
-func (srv containerService) CreateContainer(uniqueUserID, imageName string) error {
-	err := infrastructure.ContainerRepo.CreateContainer(uniqueUserID, imageName)
-	if err != nil {
-		return err
-	}
+func (c containerService) CreateContainer(uniqueUserID, imageName string) error {
+
 	return nil
 }
 
-func (srv containerService) DeleteContainer(uniqueUserID, containerID string) error {
-	err := infrastructure.ContainerRepo.DeleteContainer(uniqueUserID, containerID)
-	if err != nil {
-		return err
-	}
+func (c containerService) DeleteContainer(uniqueUserID, containerID string) error {
+
 	return nil
 }
