@@ -13,7 +13,7 @@ type containerService struct {
 
 func NewContainerService(repo interfaces.IContainerRepository, kubectl kubectl.IKubectl) interfaces.IContainerService {
 	return &containerService{
-		Repo: repo,
+		Repo:    repo,
 		Kubectl: kubectl,
 	}
 }
@@ -38,12 +38,20 @@ func (c *containerService) GetContainersByUserID(userID, podName string) ([]*Con
 	return result, nil
 }
 
-func (c containerService) CreateContainer(uniqueUserID, imageName string) error {
-
+func (c containerService) CreateContainer(userID, imageName string) error {
+	targetNamespace := userID
+	err := c.Kubectl.CreateContainer(targetNamespace, imageName)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (c containerService) DeleteContainer(uniqueUserID, containerID string) error {
-
+func (c containerService) DeleteContainer(userID, podName string) error {
+	targetNamespace := userID
+	err := c.Kubectl.DeleteContainer(targetNamespace, podName)
+	if err != nil {
+		return err
+	}
 	return nil
 }
