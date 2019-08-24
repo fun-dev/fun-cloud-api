@@ -1,0 +1,38 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "favorite-name",
+    "labels": {
+      "app": "favirite-name"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": null
+      }
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "image-name"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "image-name",
+            "image": "image-registry-path",
+            "ports": [
+              {
+                "containerPort": 80
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
