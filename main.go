@@ -1,33 +1,24 @@
 package main
 
 import (
+	"github.com/fun-dev/ccms-poc/infrastructure/di"
+	"github.com/fun-dev/ccms-poc/infrastructure/driver"
 	"log"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	router := setupRouter()
-	if err := router.Run(":8080"); err != nil {
+	// --- initialize program --- //
+	c, err := di.NewContainer()
+	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func setupRouter() *gin.Engine {
-	router := gin.Default()
-
-	// Health Check Endpoint
-	router.GET("/health", func(c *gin.Context) {
-		c.Status(http.StatusOK)
+	err = c.Provide(func (server *driver.GinDriver) {
+		err := server.Run()
+		if err != nil {
+			log.Fatal(err)
+		}
 	})
-	// Client should add /api/v1 at first on url
-	v1 := router.Group("/api/v1")
-
-	// REST Container
-	v1.GET("/containers", )
-	v1.POST("/containers", )
-	v1.DELETE("/containers/:id",)
-
-	return router
+	if err != nil {
+		log.Fatal(err)
+	}
 }

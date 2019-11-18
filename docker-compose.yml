@@ -4,7 +4,7 @@ services:
     container_name: "ccms"
     build: .
     ports:
-      - "3001":"80"
+      - "3001:80"
   redis:
     container_name: "redis"
     image: redis:latest
