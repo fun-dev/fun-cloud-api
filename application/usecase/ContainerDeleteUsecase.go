@@ -1,7 +1,8 @@
 package usecase
 
 import (
-	"errors"
+	"fmt"
+	"github.com/fun-dev/ccms-poc/infrastructure/apperror/usecaseerr"
 
 	"github.com/fun-dev/ccms-poc/adapters/gateway/repository"
 	"github.com/gin-gonic/gin"
@@ -14,30 +15,29 @@ type (
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerDeleteInteractor struct {
-		ContainerGateway repository.ContainerRepository
-		AuthGateway      repository.AuthRepository
+		ContainerRepo repository.ContainerRepository
+		AuthRepo      repository.AuthRepository
 	}
 )
 
 // NewContainerDeleteInteractor is ...
-func NewContainerDeleteInteractor(gw repository.ContainerRepository) ContainerDeleteUsecase {
-	return &ContainerDeleteInteractor{ContainerGateway: gw}
+func NewContainerDeleteInteractor(containerRepo repository.ContainerRepository, authRepo repository.AuthRepository) ContainerDeleteUsecase {
+	return &ContainerDeleteInteractor{ContainerRepo: containerRepo, AuthRepo:authRepo}
 }
 
 // Execute ...
-func (i *ContainerDeleteInteractor) Execute(ctx *gin.Context, containerID string) error {
+func (i ContainerDeleteInteractor) Execute(ctx *gin.Context, containerID string) error {
 	accessToken, ok := ctx.Get("Authorization")
 	if !ok {
-		return errors.New("token is empty")
+		return usecaseerr.AuthorizationIsNotFoundOnParam
 	}
-	userID, err := i.AuthGateway.GetUserIDByToken(accessToken.(string))
+	userID, err := i.AuthRepo.GetUserIDByToken(accessToken.(string))
 	if err != nil {
-		return errors.New("unauthorized")
+		return usecaseerr.UserIDCanNotBeFoundOnStore
 	}
 	namespace := userID.Value
-	err = i.ContainerGateway.DeleteByContainerID(ctx, containerID, namespace)
-	if err != nil {
-		return errors.New(err.Error())
+	if err = i.ContainerRepo.DeleteByContainerID(ctx, containerID, namespace); err != nil {
+		return fmt.Errorf("call ContainerRepo.DeleteByContainerID: %w", err)
 	}
 	return nil
 }
