@@ -1,9 +1,16 @@
 package repository
 
-import "github.com/gin-gonic/gin"
+import (
+	"context"
+	"github.com/fun-dev/ccms-poc/domain/container"
+)
 
 // ContainerRepository is interface
 type ContainerRepository interface {
-	GetDeploymentManifestByContainerID(ctx *gin.Context, id string) (string, error)
-	DeleteByContainerID(ctx *gin.Context, id string, namespace string) error
+	// --- External --- //
+	GetAllByUserID(ctx *context.Context, id, namespace string) ([]container.Container, error)
+	Create(ctx *context.Context, imageName, namespace string) error
+	DeleteByContainerID(ctx *context.Context, id, namespace string) error
+	// --- Internal --- //
+	GetDeploymentManifestByContainerID(ctx *context.Context, id string) (string, error)
 }
