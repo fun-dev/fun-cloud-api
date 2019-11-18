@@ -1,18 +1,8 @@
-package apperror
+package usecaseerr
 
 import "errors"
 
 var (
-	UsecaseErr UsecaseError
+	AuthorizationIsNotFoundOnParam = errors.New("authorization can not be found on param")
+	UserIDCanNotBeFoundOnStore     = errors.New("user id can not be found on store")
 )
-
-
-type UsecaseError struct {
-	AuthorizationIsNotFoundOnParam error
-	UserIDCanNotBeFoundOnStore error
-}
-
-func (e *UsecaseError) Init() {
-	e.AuthorizationIsNotFoundOnParam = errors.New("authorization can not be found on param")
-	e.UserIDCanNotBeFoundOnStore = errors.New("user id can not be found on store")
-}
