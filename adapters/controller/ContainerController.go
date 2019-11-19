@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"github.com/fun-dev/ccms-poc/application/usecase"
 	"github.com/fun-dev/ccms-poc/infrastructure/apperror/ctlerr"
 	"github.com/gin-gonic/gin"
@@ -29,12 +30,17 @@ func NewContainerController(cCre usecase.ContainerCreateUsecase, cDel usecase.Co
 // Header: key is Authorization
 // BODY: {"image_name": "nginx:latest"}
 func (cc ContainerController) Post(c *gin.Context) {
+	ctx, err := setAuthorizationContext(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	var json PostRequest
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := cc.ContainerCreateUsecase.Execute(c, json.ImageName); err != nil{
+	if err := cc.ContainerCreateUsecase.Execute(&ctx, json.ImageName); err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -55,4 +61,14 @@ func (cc ContainerController) Delete(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, gin.H{"message": "success on deleting container"})
 	return
+}
+
+func setAuthorizationContext(ginCtx *gin.Context) (context.Context, error) {
+	key := "Authorization"
+	ctx := context.Background()
+	authorization, ok := ginCtx.Get(key)
+	if !ok {
+		return nil, ctlerr.AuthorizationIsNotFoundOnHeader
+	}
+	return context.WithValue(ctx, key, authorization), nil
 }

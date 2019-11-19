@@ -2,7 +2,6 @@ package provider
 
 import (
 	"flag"
-	"github.com/fun-dev/ccms-poc/infrastructure/config"
 	"github.com/fun-dev/ccms-poc/infrastructure/driver"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -11,22 +10,18 @@ import (
 	"path/filepath"
 )
 
-var KubernetesProviderImpl *KubernetesProvider
-
-func init() {
-	KubernetesProviderImpl = &KubernetesProvider{}
-	err := KubernetesProviderImpl.InitClient()
-	if err != nil {
-		log.Fatal(err)
-	}
-	KubernetesProviderImpl.InitKubectl()
-	log.Printf("[debug] establised connection on KubernetesProvider.Init()\n")
-}
-
 type KubernetesProvider struct {
 	Client  *kubernetes.Clientset
 	Kubectl driver.IKubectlDriver
-	Config  *config.AppVariableOnKubectl
+}
+
+func NewKubernetesProvider(k driver.IKubectlDriver) *KubernetesProvider {
+	result := &KubernetesProvider{}
+	result.Kubectl = k
+	if err := result.InitClient(); err != nil {
+		log.Fatal(err)
+	}
+	return result
 }
 
 func (d *KubernetesProvider) InitClient() error {
@@ -37,18 +32,12 @@ func (d *KubernetesProvider) InitClient() error {
 		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
 	}
 	flag.Parse()
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	buildConfig, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
 	if err != nil {
 		return err
 	}
-	d.Client, err = kubernetes.NewForConfig(config)
-	if err != nil {
+	if d.Client, err = kubernetes.NewForConfig(buildConfig); err != nil {
 		return err
 	}
 	return nil
-}
-
-func (d *KubernetesProvider) InitKubectl() {
-	d.Kubectl = &driver.KubectlDriver{Config:d.Config}
-	d.Kubectl.Init()
 }

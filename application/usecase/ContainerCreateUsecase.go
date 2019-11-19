@@ -1,25 +1,25 @@
 package usecase
 
 import (
+	"context"
 	"github.com/fun-dev/ccms-poc/adapters/gateway/repository"
-	"github.com/gin-gonic/gin"
 )
 
 type (
 	ContainerCreateUsecase interface {
-		Execute(ctx *gin.Context, imageName string) error
+		Execute(ctx *context.Context, imageName string) error
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerCreateInteractor struct {
-		ContainerRepo repository.ContainerRepository
-		AuthRepo      repository.AuthRepository
+		repository.ContainerRepository
+		repository.AuthRepository
 	}
 )
 
-func NewContainerCreateInteractor() ContainerCreateUsecase {
-	return &ContainerCreateInteractor{}
+func NewContainerCreateInteractor(cRepo repository.ContainerRepository, aRepo repository.AuthRepository) ContainerCreateUsecase {
+	return &ContainerCreateInteractor{cRepo, aRepo}
 }
 
-func (c ContainerCreateInteractor) Execute(ctx *gin.Context, imageName string) error {
+func (c ContainerCreateInteractor) Execute(ctx *context.Context, imageName string) error {
 	panic("implement me")
 }

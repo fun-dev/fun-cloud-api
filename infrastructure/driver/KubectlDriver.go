@@ -2,9 +2,10 @@ package driver
 
 import (
 	"bytes"
-	"errors"
-	"github.com/fun-dev/ccms-poc/infrastructure/config"
+	"fmt"
+	"github.com/fun-dev/ccms-poc/infrastructure/apperror/drivererr"
 	"io/ioutil"
+	"os"
 	"os/exec"
 
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
@@ -13,7 +14,15 @@ import (
 	apps "k8s.io/api/apps/v1"
 	core "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/serializer"
+	serialize "k8s.io/apimachinery/pkg/runtime/serializer"
+)
+
+var (
+	_binaryPath             = os.Getenv("KUBECTL_BINARY_PATH")
+	_deploymentManifestPath = os.Getenv("KUBECTL_DEPLOYMENT_MANIFEST_PATH")
+	//_serviceManifestPath       string
+	//_persistentManifestPath    string
+	//_persistentVolumeClaimPath string
 )
 
 const (
@@ -31,16 +40,24 @@ type IKubectlDriver interface {
 
 // KubectlDriver is
 type KubectlDriver struct {
-	BinaryPath       string
-	DeploymentObject apps.Deployment
-	SvcObject        core.Service
-	PVObject         core.PersistentVolume
-	PVCObject        core.PersistentVolumeClaim
-	Config           *config.AppVariableOnKubectl
+	apps.Deployment
+	core.Service
+	core.PersistentVolume
+	core.PersistentVolumeClaim
+
+	BinaryPath string
+}
+
+func NewKubectlDriver() IKubectlDriver {
+	// --- create non value instance on memory --- //
+	result := &KubectlDriver{}
+	// --- load data  --- //
+	result.Init()
+	return result
 }
 
 func (d *KubectlDriver) Init() {
-	d.BinaryPath = d.Config.BinaryPath
+	d.BinaryPath = _binaryPath
 }
 
 // Execute = execute kubectl command
@@ -56,13 +73,13 @@ func (d *KubectlDriver) Execute(option string, json string, namespace string) er
 	case KubectlOptionDelete:
 		cmd = exec.Command("delete", args...)
 	default:
-		return errors.New("option is not found")
+		return drivererr.OptionCanNotBeFoundOnKubectl
 	}
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
-	err := cmd.Run()
-	if err != nil {
-		return errors.New(stderr.String())
+	// --- Uber Style Guide: Reduce Scope of Variables --- //
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("execute kubectl: %w", err)
 	}
 	return nil
 }
@@ -70,7 +87,7 @@ func (d *KubectlDriver) Execute(option string, json string, namespace string) er
 // DeserializeYamlToObject is
 func (d *KubectlDriver) DeserializeYamlToObject(filePath string, targetObject runtime.Object) (interface{}, error) {
 	scheme := runtime.NewScheme()
-	codecFactory := serializer.NewCodecFactory(scheme)
+	codecFactory := serialize.NewCodecFactory(scheme)
 	deserializer := codecFactory.UniversalDeserializer()
 	yaml, err := ioutil.ReadFile(filePath)
 	if err != nil {
@@ -87,8 +104,7 @@ func (d *KubectlDriver) DeserializeYamlToObject(filePath string, targetObject ru
 func (d *KubectlDriver) DecodeObjectToYaml(targetObject runtime.Object) (string, error) {
 	serializer := json.NewYAMLSerializer(json.DefaultMetaFactory, scheme.Scheme, scheme.Scheme)
 	var buffer bytes.Buffer
-	err := serializer.Encode(targetObject, &buffer)
-	if err != nil {
+	if err := serializer.Encode(targetObject, &buffer); err != nil {
 		return "", err
 	}
 	return buffer.String(), nil

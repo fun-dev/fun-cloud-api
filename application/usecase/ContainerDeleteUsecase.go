@@ -1,17 +1,17 @@
 package usecase
 
 import (
+	"context"
 	"fmt"
 	"github.com/fun-dev/ccms-poc/infrastructure/apperror/usecaseerr"
 
 	"github.com/fun-dev/ccms-poc/adapters/gateway/repository"
-	"github.com/gin-gonic/gin"
 )
 
 type (
 	// ContainerDeleteUsecase is Usecase
 	ContainerDeleteUsecase interface {
-		Execute(ctx *gin.Context, containerID string) error
+		Execute(ctx *context.Context, containerID string) error
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerDeleteInteractor struct {
@@ -26,7 +26,7 @@ func NewContainerDeleteInteractor(containerRepo repository.ContainerRepository, 
 }
 
 // Execute ...
-func (i ContainerDeleteInteractor) Execute(ctx *gin.Context, containerID string) error {
+func (i ContainerDeleteInteractor) Execute(ctx *context.Context, containerID string) error {
 	accessToken, ok := ctx.Get("Authorization")
 	if !ok {
 		return usecaseerr.AuthorizationIsNotFoundOnParam
@@ -36,7 +36,7 @@ func (i ContainerDeleteInteractor) Execute(ctx *gin.Context, containerID string)
 		return usecaseerr.UserIDCanNotBeFoundOnStore
 	}
 	namespace := userID.Value
-	if err = i.ContainerRepo.DeleteByContainerID(ctx, containerID, namespace); err != nil {
+	if err = i.ContainerRepo.DeleteByContainerID(ctx., containerID, namespace); err != nil {
 		return fmt.Errorf("call ContainerRepo.DeleteByContainerID: %w", err)
 	}
 	return nil
