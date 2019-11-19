@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: favorite-name
+  name: test
   labels:
-    app: favirite-name
+    app: test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app:
+      app: test
   template:
     metadata:
       labels:
-        app: image-name
+        app: test
     spec:
       containers:
-        - name: image-name
-          image: image-registry-path
+        - name: test
+          image: nginx:1.7.9 #Registry Path
           ports:
             - containerPort: 80

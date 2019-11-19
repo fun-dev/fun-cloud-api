@@ -3,15 +3,13 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/fun-dev/ccms/infrastructure/apperror/usecaseerr"
-
 	"github.com/fun-dev/ccms/adapters/gateway/repository"
 )
 
 type (
 	// ContainerDeleteUsecase is Usecase
 	ContainerDeleteUsecase interface {
-		Execute(ctx *context.Context, containerID string) error
+		Execute(ctx context.Context, userID, containerID string) error
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerDeleteInteractor struct {
@@ -22,21 +20,16 @@ type (
 
 // NewContainerDeleteInteractor is ...
 func NewContainerDeleteInteractor(containerRepo repository.ContainerRepository, authRepo repository.AuthRepository) ContainerDeleteUsecase {
-	return &ContainerDeleteInteractor{ContainerRepo: containerRepo, AuthRepo:authRepo}
+	return &ContainerDeleteInteractor{ContainerRepo: containerRepo, AuthRepo: authRepo}
 }
 
-// Execute ...
-func (i ContainerDeleteInteractor) Execute(ctx *context.Context, containerID string) error {
-	accessToken, ok := ctx.Get("Authorization")
-	if !ok {
-		return usecaseerr.AuthorizationIsNotFoundOnParam
-	}
-	userID, err := i.AuthRepo.GetUserIDByToken(accessToken.(string))
-	if err != nil {
-		return usecaseerr.UserIDCanNotBeFoundOnStore
-	}
-	namespace := userID.Value
-	if err = i.ContainerRepo.DeleteByContainerID(ctx, containerID, namespace); err != nil {
+/* Execute is executing container delete usecase
+@param containerID: unique string like uuid
+*/
+func (i ContainerDeleteInteractor) Execute(ctx context.Context, userID, containerID string) error {
+	// in this application, we use userID as kubernetes namespace
+	namespace := userID
+	if err := i.ContainerRepo.DeleteByContainerID(ctx, containerID, namespace); err != nil {
 		return fmt.Errorf("call ContainerRepo.DeleteByContainerID: %w", err)
 	}
 	return nil

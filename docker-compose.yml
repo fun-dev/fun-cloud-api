@@ -2,34 +2,25 @@ version: '3'
 services:
   ccms:
     container_name: "ccms"
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      REDIS_ADDRESS: redis
+      REDIS_PASSWORD: ccms
     ports:
-      - "3001:80"
+      - "3000:3000"
+    depends_on:
+      - redis
   redis:
     container_name: "redis"
     image: redis:latest
     ports:
       - "6379:6379"
-    command: redis-server --appendonly yes
+    command: redis-server --appendonly yes --requirepass ccms
     volumes:
       - redis-data:/data
-  nosql:
-    container_name: "nosql"
-    image: mongo
-      restart: always
-      environment:
-        MONGO_INITDB_ROOT_USERNAME: fun-cloud
-        MONGO_INITDB_ROOT_PASSWORD: fun-cloud
-      ports:
-        - 27017:27017
-      volumes:
-        - mongo-db:data/db
-        - mongo-config:/data/configdb
 
 volumes:
-  mongo-db:
-    driver: local
-  mongo-config:
-    driver: local
   redis-data:
     driver: local

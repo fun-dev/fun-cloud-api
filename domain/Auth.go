@@ -26,7 +26,7 @@ func (a AuthService) EnsureIsExist() gin.HandlerFunc {
 		accessToken := c.GetHeader(key)
 		userID, err := a.AuthRepository.GetUserIDByToken(accessToken)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"message":"your access token is not found"})
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "your access token is not found"})
 			c.Abort()
 			return
 		}

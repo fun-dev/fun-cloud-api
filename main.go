@@ -12,7 +12,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = c.Provide(func (server *driver.GinDriver) {
+	err = c.Provide(func(server *driver.GinDriver) {
 		err := server.Run()
 		if err != nil {
 			log.Fatal(err)

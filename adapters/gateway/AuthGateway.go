@@ -4,7 +4,7 @@ import (
 	"github.com/fun-dev/ccms/adapters/gateway/repository"
 )
 
-type AuthGateway struct {}
+type AuthGateway struct{}
 
 func NewAuthGateway() repository.AuthRepository {
 	return &AuthGateway{}

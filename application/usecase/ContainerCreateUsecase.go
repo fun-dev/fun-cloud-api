@@ -7,7 +7,7 @@ import (
 
 type (
 	ContainerCreateUsecase interface {
-		Execute(ctx *context.Context, imageName string) error
+		Execute(ctx context.Context, userID, imageName string) error
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerCreateInteractor struct {
@@ -20,6 +20,11 @@ func NewContainerCreateInteractor(cRepo repository.ContainerRepository, aRepo re
 	return &ContainerCreateInteractor{cRepo, aRepo}
 }
 
-func (c ContainerCreateInteractor) Execute(ctx *context.Context, imageName string) error {
-	panic("implement me")
+func (c ContainerCreateInteractor) Execute(ctx context.Context, userID, imageName string) error {
+	// in this application, we use userID as kubernetes namespace
+	namespace := userID
+	if err := c.ContainerRepository.Create(ctx, imageName, namespace); err != nil {
+		return err
+	}
+	return nil
 }

@@ -40,7 +40,14 @@ func (cc ContainerController) Post(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := cc.ContainerCreateUsecase.Execute(&ctx, json.ImageName); err != nil{
+	// TODO: fix to common value
+	key := "USER_ID"
+	userID, ok := c.Get(key)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "sorry fix immediately"})
+		return
+	}
+	if err := cc.ContainerCreateUsecase.Execute(ctx, userID.(string), json.ImageName); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -55,7 +62,13 @@ func (cc ContainerController) Delete(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": ctlerr.ContainerIDCanNotBeFoundOnParam.Error()})
 		return
 	}
-	if err := cc.ContainerDeleteUsecase.Execute(c, containerID); err != nil {
+	// Authentication Information
+	ctx, err := setAuthorizationContext(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := cc.ContainerDeleteUsecase.Execute(ctx, containerID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
