@@ -1,8 +1,8 @@
 package gateway
 
 import (
-	"github.com/fun-dev/ccms-poc/adapters/gateway/repository"
-	"github.com/fun-dev/ccms-poc/domain/value"
+	"github.com/fun-dev/ccms/adapters/gateway/repository"
+	"github.com/fun-dev/ccms/domain/value"
 )
 
 type AuthGateway struct {}

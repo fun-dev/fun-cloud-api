@@ -3,11 +3,11 @@ package gateway
 import (
 	"context"
 	"fmt"
-	"github.com/fun-dev/ccms-poc/adapters/gateway/repository"
-	"github.com/fun-dev/ccms-poc/domain/container"
-	"github.com/fun-dev/ccms-poc/infrastructure/apperror/repoerr"
-	"github.com/fun-dev/ccms-poc/infrastructure/driver"
-	"github.com/fun-dev/ccms-poc/infrastructure/provider"
+	"github.com/fun-dev/ccms/adapters/gateway/repository"
+	"github.com/fun-dev/ccms/domain"
+	"github.com/fun-dev/ccms/infrastructure/apperror/repoerr"
+	"github.com/fun-dev/ccms/infrastructure/driver"
+	"github.com/fun-dev/ccms/infrastructure/provider"
 	"log"
 )
 
@@ -28,7 +28,7 @@ func NewContainerGateway(
 	}
 }
 
-func (g ContainerGateway) GetAllByUserID(ctx *context.Context, id, namespace string) ([]container.Container, error) {
+func (g ContainerGateway) GetAllByUserID(ctx *context.Context, id, namespace string) ([]domain.Container, error) {
 	panic("implement me")
 }
 

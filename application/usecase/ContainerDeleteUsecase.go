@@ -3,9 +3,9 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/fun-dev/ccms-poc/infrastructure/apperror/usecaseerr"
+	"github.com/fun-dev/ccms/infrastructure/apperror/usecaseerr"
 
-	"github.com/fun-dev/ccms-poc/adapters/gateway/repository"
+	"github.com/fun-dev/ccms/adapters/gateway/repository"
 )
 
 type (
@@ -36,7 +36,7 @@ func (i ContainerDeleteInteractor) Execute(ctx *context.Context, containerID str
 		return usecaseerr.UserIDCanNotBeFoundOnStore
 	}
 	namespace := userID.Value
-	if err = i.ContainerRepo.DeleteByContainerID(ctx., containerID, namespace); err != nil {
+	if err = i.ContainerRepo.DeleteByContainerID(ctx, containerID, namespace); err != nil {
 		return fmt.Errorf("call ContainerRepo.DeleteByContainerID: %w", err)
 	}
 	return nil

@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"github.com/fun-dev/ccms-poc/adapters/gateway/repository"
+	"github.com/fun-dev/ccms/adapters/gateway/repository"
 )
 
 type (

@@ -2,8 +2,8 @@ package controller
 
 import (
 	"context"
-	"github.com/fun-dev/ccms-poc/application/usecase"
-	"github.com/fun-dev/ccms-poc/infrastructure/apperror/ctlerr"
+	"github.com/fun-dev/ccms/application/usecase"
+	"github.com/fun-dev/ccms/infrastructure/apperror/ctlerr"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

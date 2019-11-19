@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/fun-dev/ccms-poc/domain/value"
+	"github.com/fun-dev/ccms/domain/value"
 )
 
 // AuthRepository is

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/fun-dev/ccms-poc/infrastructure/di"
-	"github.com/fun-dev/ccms-poc/infrastructure/driver"
+	"github.com/fun-dev/ccms/infrastructure/di"
+	"github.com/fun-dev/ccms/infrastructure/driver"
 	"log"
 )
 

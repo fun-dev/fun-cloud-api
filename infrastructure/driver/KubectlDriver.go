@@ -3,7 +3,7 @@ package driver
 import (
 	"bytes"
 	"fmt"
-	"github.com/fun-dev/ccms-poc/infrastructure/apperror/drivererr"
+	"github.com/fun-dev/ccms/infrastructure/apperror/drivererr"
 	"io/ioutil"
 	"os"
 	"os/exec"

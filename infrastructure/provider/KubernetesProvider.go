@@ -2,7 +2,7 @@ package provider
 
 import (
 	"flag"
-	"github.com/fun-dev/ccms-poc/infrastructure/driver"
+	"github.com/fun-dev/ccms/infrastructure/driver"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"

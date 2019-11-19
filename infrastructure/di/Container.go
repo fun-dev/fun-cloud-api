@@ -1,11 +1,11 @@
 package di
 
 import (
-	"github.com/fun-dev/ccms-poc/adapters/controller"
-	"github.com/fun-dev/ccms-poc/adapters/gateway"
-	"github.com/fun-dev/ccms-poc/application/usecase"
-	"github.com/fun-dev/ccms-poc/infrastructure/driver"
-	"github.com/fun-dev/ccms-poc/infrastructure/provider"
+	"github.com/fun-dev/ccms/adapters/controller"
+	"github.com/fun-dev/ccms/adapters/gateway"
+	"github.com/fun-dev/ccms/application/usecase"
+	"github.com/fun-dev/ccms/infrastructure/driver"
+	"github.com/fun-dev/ccms/infrastructure/provider"
 	"go.uber.org/dig"
 )
 

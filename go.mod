@@ -1,14 +1,14 @@
-module github.com/fun-dev/ccms-poc
+module github.com/fun-dev/ccms
 
-go 1.12
+go 1.13
 
 require (
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-redis/redis/v7 v7.0.0-beta.4
 	github.com/googleapis/gnostic v0.3.1 // indirect
 	github.com/imdario/mergo v0.3.8 // indirect
-	github.com/kelseyhightower/envconfig v1.4.0
-	go.uber.org/dig v1.8.0 // indirect
+	github.com/kelseyhightower/envconfig v1.4.0 // indirect
+	go.uber.org/dig v1.8.0
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	k8s.io/api v0.0.0-20191109101513-0171b7c15da1
