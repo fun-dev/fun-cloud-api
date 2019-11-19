@@ -8,7 +8,7 @@ import (
 
 var (
 	_defaultPort = ":3000"
-	_router = gin.Default()
+	_router      = gin.Default()
 )
 
 type IContainerController interface {
@@ -17,7 +17,7 @@ type IContainerController interface {
 
 type GinDriver struct {
 	ContainerCtrl IContainerController
-	Router *gin.Engine
+	Router        *gin.Engine
 }
 
 func NewGinDriver() *GinDriver {
@@ -37,8 +37,8 @@ func (d *GinDriver) setupRouting() error {
 	// --- Client should add /api/v1 at first on url
 	v1 := d.Router.Group("/api/v1")
 	// --- REST ENDPOINT --- //
-	v1.GET("/containers", )
-	v1.POST("/containers", )
+	v1.GET("/containers")
+	v1.POST("/containers")
 	v1.DELETE("/containers/:id", d.ContainerCtrl.Delete)
 	return nil
 }
