@@ -1,24 +1,26 @@
 version: '3'
 services:
-  api:
-    build: .
+  ccms:
+    container_name: "ccms"
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     environment:
-      - SQL_USER=cloud-api
-      - SQL_PASS=7CpV#RdTgttC
-      - SQL_HOST=db
-      - SQL_DB=cloud_api
-      - PROXY_ADDR=35.211.84.216:8081
+      REDIS_ADDRESS: redis
+      REDIS_PASSWORD: ccms
     ports:
-      - "8080:8080"
-    depends_on: 
-      - db
-  db:
-    image: mysql:5.7
-    environment:
-      - MYSQL_ROOT_PASSWORD=zJ6pF57r54JH
-      - MYSQL_DATABASE=cloud_api
-      - MYSQL_USER=cloud-api
-      - MYSQL_PASSWORD=7CpV#RdTgttC
-    command: mysqld --character-set-server=utf8
+      - "3000:3000"
+    depends_on:
+      - redis
+  redis:
+    container_name: "redis"
+    image: redis:latest
     ports:
-       - "3306:3306"
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass ccms
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+    driver: local

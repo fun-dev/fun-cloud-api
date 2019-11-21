@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: favorite-name
+spec:
+  storageClassName: favotite-name
+  accessModes:
+    - ReadWriteOnce # Can't connect multiple node at the same time
+  resources:
+    requests:
+      storage: 3Gi

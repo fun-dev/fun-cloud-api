@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: favorite-name
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce # Can't connect multiple node at the same time
+  hostPath:
+    path: "/mnt/data"
