@@ -2,17 +2,13 @@ package usecase
 
 import (
 	"context"
-	"github.com/fun-dev/ccms/internal/container/adapters/gateway/repository"
-	"github.com/fun-dev/ccms/internal/container/domain"
+	"github.com/fun-dev/fun-cloud-api/internal/container/domain/auth"
+	"github.com/fun-dev/fun-cloud-api/internal/container/domain/container"
 )
-
-// input
-
-// output
 
 type (
 	ContainerReadUsecaseEntry struct {
-		Containers []domain.Container
+		Containers []*container.Container
 	}
 
 	ContainerReadUsecaseResponse struct {
@@ -20,12 +16,12 @@ type (
 	}
 
 	ContainerReadUsecase interface {
-		Execute(ctx context.Context, userID, imageName string) (resp *ContainerReadUsecaseResponse, err error)
+		Execute(ctx context.Context, userID, imageName string) (resp ContainerReadUsecaseResponse, err error)
 	}
 
 	ContainerReadInteractor struct {
-		repository.ContainerRepository
-		repository.AuthRepository
+		cRepo container.Repository
+		aRepo auth.AuthRepository
 	}
 )
 
@@ -39,10 +35,10 @@ Execute
 @param: userID
 @param imageName
 */
-func (c ContainerReadInteractor) Execute(ctx context.Context, userID, imageName string) (resp *ContainerReadUsecaseResponse, err error) {
+func (c ContainerReadInteractor) Execute(ctx context.Context, userID, imageName string) (resp ContainerReadUsecaseResponse, err error) {
 	// in this application, we use userID as kubernetes namespace.yaml
 	namespace := userID
-	resp.Entry.Containers, err = c.ContainerRepository.GetAllByUserID(ctx, userID, namespace)
+	resp.Entry.Containers, err = c.cRepo.GetAllByUserID(ctx, userID, namespace)
 	if err != nil {
 		return
 	}

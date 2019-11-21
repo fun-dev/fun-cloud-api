@@ -3,7 +3,8 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/fun-dev/ccms/internal/container/adapters/gateway/repository"
+	"github.com/fun-dev/fun-cloud-api/internal/container/domain/auth"
+	"github.com/fun-dev/fun-cloud-api/internal/container/domain/container"
 )
 
 type (
@@ -13,14 +14,14 @@ type (
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerDeleteInteractor struct {
-		ContainerRepo repository.ContainerRepository
-		AuthRepo      repository.AuthRepository
+		cRepo 	container.Repository
+		aRepo      auth.AuthRepository
 	}
 )
 
 // NewContainerDeleteInteractor is ...
-func NewContainerDeleteInteractor(containerRepo repository.ContainerRepository, authRepo repository.AuthRepository) ContainerDeleteUsecase {
-	return &ContainerDeleteInteractor{ContainerRepo: containerRepo, AuthRepo: authRepo}
+func NewContainerDeleteInteractor(cRepo container.Repository, aRepo auth.AuthRepository) ContainerDeleteUsecase {
+	return &ContainerDeleteInteractor{cRepo, aRepo}
 }
 
 /* Execute is executing container delete usecase
@@ -29,7 +30,7 @@ func NewContainerDeleteInteractor(containerRepo repository.ContainerRepository, 
 func (i ContainerDeleteInteractor) Execute(ctx context.Context, userID, containerID string) error {
 	// in this application, we use userID as kubernetes namespace.yaml
 	namespace := userID
-	if err := i.ContainerRepo.DeleteByContainerID(ctx, containerID, namespace); err != nil {
+	if err := i.cRepo.DeleteByContainerID(ctx, containerID, namespace); err != nil {
 		return fmt.Errorf("call ContainerRepo.DeleteByContainerID: %w", err)
 	}
 	return nil

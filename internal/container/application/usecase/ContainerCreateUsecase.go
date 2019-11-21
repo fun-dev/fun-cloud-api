@@ -30,7 +30,7 @@ func (c ContainerCreateInteractor) Execute(ctx context.Context, userID, imageNam
 	if err != nil {
 		return err
 	}
-	if err := c.cRepo.SaveDeploymentManifestByContainerID(ctx, userID, containerID, manifest); err != nil {
+	if err := c.cRepo.SaveDeploymentManifestByContainerID(ctx, containerID, manifest); err != nil {
 		return err
 	}
 	return nil
