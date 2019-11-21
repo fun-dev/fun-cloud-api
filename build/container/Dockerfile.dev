@@ -1,12 +1,12 @@
 FROM golang:1.13
-EXPOSE 3000
+# download kubectl binary
 WORKDIR /tmp
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.15.0/bin/linux/amd64/kubectl && \
         chmod +x ./kubectl
-WORKDIR /ccms
+WORKDIR /fun-cloud-api
 COPY . .
+# load variable for development
+RUN set -a && source ./configs/container/dev.env
 RUN go get github.com/pilu/fresh
-ENV KUBECTL_BINARY_PATH="/tmp/kubectl"
-ENV KUBECTL_DEPLOYMENT_MANIFEST_PATH="/ccms/manifest/yaml/pod-deployment-template.yaml"
-ENV KUBECTL_CONFIG_PATH="ccms/file/kubeconfig"
+EXPOSE 3000
 CMD ["fresh"]
