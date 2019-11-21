@@ -1,17 +1,15 @@
-package repository
+package container
 
 import (
 	"context"
-	"github.com/fun-dev/ccms/internal/container/domain"
 )
 
 // ContainerRepository is interface
-type ContainerRepository interface {
+type Repository interface {
 	// --- External --- //
-	GetAllByUserID(ctx context.Context, id, namespace string) ([]domain.Container, error)
-	Create(ctx context.Context, imageName, namespace string) error
+	GetAllByUserID(ctx context.Context, id, namespace string) ([]*Container, error)
+	Create(ctx context.Context, id, imageName, namespace string) (manifest string, err error)
 	DeleteByContainerID(ctx context.Context, id, namespace string) error
-	// --- Internal --- //
 	GetDeploymentManifestByContainerID(ctx context.Context, id string) (manifest string, err error)
-	SaveDeploymentManifestByContainerID(ctx context.Context, id string) error
+	SaveDeploymentManifestByContainerID(ctx context.Context, userID, id, yaml string) error
 }

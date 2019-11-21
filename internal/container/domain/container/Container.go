@@ -1,4 +1,4 @@
-package domain
+package container
 
 type Container struct {
 	UID         string `json:"uid"`
