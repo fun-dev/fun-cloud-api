@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/fun-dev/fun-cloud-api/internal/container/domain/auth"
 	"github.com/fun-dev/fun-cloud-api/internal/container/domain/container"
+	"github.com/fun-dev/fun-cloud-api/pkg/uuid"
 )
 
 type (
@@ -12,19 +13,24 @@ type (
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerCreateInteractor struct {
-		container.ContainerRepository
-		auth.AuthRepository
+		cRepo container.Repository
+		aRepo auth.AuthRepository
 	}
 )
 
-func NewContainerCreateInteractor(cRepo container.ContainerRepository, aRepo auth.AuthRepository) ContainerCreateUsecase {
+func NewContainerCreateInteractor(cRepo container.Repository, aRepo auth.AuthRepository) ContainerCreateUsecase {
 	return &ContainerCreateInteractor{cRepo, aRepo}
 }
 
 func (c ContainerCreateInteractor) Execute(ctx context.Context, userID, imageName string) error {
 	// in this application, we use userID as kubernetes namespace.yaml
+	containerID := uuid.NewUUID()
 	namespace := userID
-	if err := c.ContainerRepository.Create(ctx, imageName, namespace); err != nil {
+	manifest, err := c.cRepo.Create(ctx, containerID, imageName, namespace)
+	if err != nil {
+		return err
+	}
+	if err := c.cRepo.SaveDeploymentManifestByContainerID(ctx, userID, containerID, manifest); err != nil {
 		return err
 	}
 	return nil
