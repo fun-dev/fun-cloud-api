@@ -1,4 +1,4 @@
-package repository
+package auth
 
 // AuthRepository is
 type AuthRepository interface {

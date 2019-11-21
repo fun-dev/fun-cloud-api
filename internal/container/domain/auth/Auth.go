@@ -1,4 +1,4 @@
-package domain
+package auth
 
 import (
 	"github.com/fun-dev/ccms/internal/container/adapters/gateway/repository"

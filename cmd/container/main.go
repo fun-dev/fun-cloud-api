@@ -1,8 +1,8 @@
-package main
+package container
 
 import (
-	"github.com/fun-dev/ccms/infrastructure/di"
-	"github.com/fun-dev/ccms/infrastructure/driver"
+	"github.com/fun-dev/ccms/internal/container/infrastructure/di"
+	"github.com/fun-dev/ccms/internal/container/infrastructure/driver"
 	"log"
 )
 

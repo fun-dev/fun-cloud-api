@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/fun-dev/ccms/adapters/gateway/repository"
+	"github.com/fun-dev/ccms/internal/container/adapters/gateway/repository"
 )
 
 type (
@@ -27,7 +27,7 @@ func NewContainerDeleteInteractor(containerRepo repository.ContainerRepository, 
 @param containerID: unique string like uuid
 */
 func (i ContainerDeleteInteractor) Execute(ctx context.Context, userID, containerID string) error {
-	// in this application, we use userID as kubernetes namespace
+	// in this application, we use userID as kubernetes namespace.yaml
 	namespace := userID
 	if err := i.ContainerRepo.DeleteByContainerID(ctx, containerID, namespace); err != nil {
 		return fmt.Errorf("call ContainerRepo.DeleteByContainerID: %w", err)

@@ -1,4 +1,4 @@
-module github.com/fun-dev/ccms
+module github.com/fun-dev/fun-cloud-api
 
 go 1.13
 
