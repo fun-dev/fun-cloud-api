@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"github.com/fun-dev/ccms/domain"
+	"github.com/fun-dev/ccms/internal/container/domain"
 )
 
 // ContainerRepository is interface

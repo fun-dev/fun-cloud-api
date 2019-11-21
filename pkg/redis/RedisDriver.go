@@ -1,4 +1,4 @@
-package driver
+package redis
 
 import (
 	"github.com/go-redis/redis/v7"
@@ -12,19 +12,19 @@ var (
 	_defaultDB = 0
 )
 
-type RedisDriver struct {
+type Driver struct {
 	Client *redis.Client
 }
 
-func NewRedisDriver() *RedisDriver {
-	result := &RedisDriver{}
+func NewRedisDriver() *Driver {
+	result := &Driver{}
 	if err := result.Init(); err != nil {
 		log.Fatal(err)
 	}
 	return result
 }
 
-func (d *RedisDriver) Init() error {
+func (d *Driver) Init() error {
 	d.Client = redis.NewClient(&redis.Options{
 		Addr:     _address,
 		Password: _password,

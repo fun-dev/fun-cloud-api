@@ -1,4 +1,4 @@
-package drivererr
+package kubectl
 
 import "errors"
 

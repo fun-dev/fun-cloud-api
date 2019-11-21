@@ -1,12 +1,11 @@
-package driver
+package kubectl
 
 import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/fun-dev/ccms/infrastructure/apperror/drivererr"
+	"github.com/fun-dev/fun-cloud-api/pkg/logging"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 
@@ -31,8 +30,8 @@ var (
 )
 
 const (
-	KubectlOptionApply    = "KUBECTL_OPTION_APPLY"
-	KubectlOptionDelete   = "KUBECTL_OPTION_DELETE"
+	Apply    = "KUBECTL_OPTION_APPLY"
+	Delete   = "KUBECTL_OPTION_DELETE"
 	UseDeploymentManifest = "USE_DEPLOYMENT_MANIFEST"
 )
 
@@ -45,7 +44,7 @@ type IKubectlDriver interface {
 }
 
 // KubectlDriver is
-type KubectlDriver struct {
+type Driver struct {
 	apps.Deployment
 	core.Service
 	core.PersistentVolume
@@ -58,21 +57,21 @@ type KubectlDriver struct {
 
 func NewKubectlDriver() IKubectlDriver {
 	// --- create non value instance on memory --- //
-	result := &KubectlDriver{}
+	result := &Driver{}
 	// --- load data  --- //
 	result.Init()
 	return result
 }
 
 func NewTestKubectlDriver() IKubectlDriver {
-	result := &KubectlDriver{}
+	result := &Driver{}
 	result.DeploymentManifestPath = _defaultDeploymentManifestPath
 	result.KubeconfigPath = _defaultKubeconfigPath
 	result.BinaryPath = _defaultBinaryPath
 	return result
 }
 
-func (d *KubectlDriver) Init() {
+func (d *Driver) Init() {
 	d.BinaryPath = _binaryPath
 	d.DeploymentManifestPath = _deploymentManifestPath
 	d.KubeconfigPath = _kubeconfigPath
@@ -81,20 +80,22 @@ func (d *KubectlDriver) Init() {
 /*
 Execute is executing kubectl command
 @param option : kubectl 'apply' or 'delete'
-@param namespace : kubectl '-n'
+@param namespace.yaml : kubectl '-n'
 */
-func (d *KubectlDriver) Execute(option string, yaml string, namespace string) error {
+func (d *Driver) Execute(option string, yaml string, namespace string) error {
 	// --- gen yaml file --- //
 	file, err := os.Create("tmp.yaml")
 	if err != nil {
 		return err
 	}
+	// TODO: implement error handling
 	defer file.Close()
 	defer func() {
 		if err := os.Remove("tmp.yaml"); err != nil {
 			fmt.Println(err)
 		}
 	}()
+	// TODO: implement error handling
 	file.Write(([]byte)(yaml))
 	// --------------------- //
 	var cmd *exec.Cmd
@@ -102,22 +103,22 @@ func (d *KubectlDriver) Execute(option string, yaml string, namespace string) er
 	var stderr bytes.Buffer
 	// --- check kubectl command "Apply" or "Delete" --- //
 	switch option {
-	case KubectlOptionApply:
+	case Apply:
 		args := []string{"--kubeconfig", d.KubeconfigPath, "apply", "-f", _currentDir + "/tmp.yaml", "-n", namespace}
 		cmd = exec.Command(d.BinaryPath, args...)
-	case KubectlOptionDelete:
+	case Delete:
 		args := []string{"--kubeconfig", d.KubeconfigPath, "delete", "-f", _currentDir + "/tmp.yaml", "-n", namespace}
 		cmd = exec.Command(d.BinaryPath, args...)
 	default:
-		return drivererr.OptionCanNotBeFoundOnKubectl
+		return OptionCanNotBeFoundOnKubectl
 	}
-	log.Printf("[debug]: generate command: %s", cmd.Args)
-	log.Printf("[debug]: current directory is %s", _currentDir)
+	logging.Logf("debug: generate command: %s", cmd.Args)
+	logging.Logf("debug: current directory is %s", _currentDir)
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
 	// --- Uber Style Guide: Reduce Scope of Variables --- //
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("[error]: call kubectl: %w", err)
+		return fmt.Errorf("error: call kubectl: %w", err)
 	}
 	return nil
 }
@@ -127,7 +128,7 @@ DeserializeYamlToObject is generating object from yaml file
 @param: option is kind of yaml manifest example: deployment and service
 @targetObject is struct resource example: Deployment and Service
 */
-func (d KubectlDriver) DeserializeYamlToObject(option string, targetObject runtime.Object) (interface{}, error) {
+func (d Driver) DeserializeYamlToObject(option string, targetObject runtime.Object) (interface{}, error) {
 	var yaml []byte
 	var err error
 	scheme := runtime.NewScheme()
@@ -151,7 +152,7 @@ func (d KubectlDriver) DeserializeYamlToObject(option string, targetObject runti
 }
 
 // DecodeObjectToYaml is
-func (d KubectlDriver) DecodeObjectToYaml(targetObject runtime.Object) (string, error) {
+func (d Driver) DecodeObjectToYaml(targetObject runtime.Object) (string, error) {
 	serializer := json.NewSerializerWithOptions(json.DefaultMetaFactory, scheme.Scheme, scheme.Scheme, json.SerializerOptions{Yaml: true})
 	var buffer bytes.Buffer
 	if err := serializer.Encode(targetObject, &buffer); err != nil {

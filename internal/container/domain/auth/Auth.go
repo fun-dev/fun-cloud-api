@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/fun-dev/ccms/adapters/gateway/repository"
+	"github.com/fun-dev/ccms/internal/container/adapters/gateway/repository"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
