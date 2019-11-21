@@ -1,13 +1,10 @@
 version: '3'
 services:
-  ccms:
-    container_name: "ccms"
+  container:
+    container_name: "container"
     build:
-      context: .
-      dockerfile: Dockerfile.dev
-    environment:
-      REDIS_ADDRESS: redis
-      REDIS_PASSWORD: ccms
+      context: ..
+      dockerfile: ../build/container/Dockerfile.dev
     ports:
       - "3000:3000"
     depends_on:
@@ -17,7 +14,7 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
-    command: redis-server --appendonly yes --requirepass ccms
+    command: redis-server --appendonly yes --requirepass fun-cloud
     volumes:
       - redis-data:/data
 
