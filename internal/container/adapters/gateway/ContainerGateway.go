@@ -88,8 +88,8 @@ func (g ContainerGateway) Create(ctx context.Context, id, imageName, namespace s
 	return
 }
 
-func (g ContainerGateway) SaveDeploymentManifestByContainerID(ctx context.Context, userID, id, yaml string) error {
-	key := userID + "_" + "id"
+func (g ContainerGateway) SaveDeploymentManifestByContainerID(ctx context.Context, containerID, yaml string) error {
+	key := "deployment_" + "id"
 	err := g.Redis.Client.Append(key, yaml).Err()
 	if err != nil {
 		return err

@@ -4,10 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"os"
 )
 
 var (
-	_defaultPort = ":3000"
+	_port = os.Getenv("SERVER_PORT")
 	_router      = gin.Default()
 )
 
@@ -34,8 +35,8 @@ func (d *GinDriver) setupRouting() error {
 	d.Router.GET("/health", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
-	// --- Client should add /api/v1 at first on url
-	v1 := d.Router.Group("/api/v1")
+	// --- Client should add /v1 at first on url
+	v1 := d.Router.Group("/v1")
 	// --- REST ENDPOINT --- //
 	v1.GET("/containers")
 	v1.POST("/containers")
@@ -44,7 +45,7 @@ func (d *GinDriver) setupRouting() error {
 }
 
 func (d *GinDriver) Run() error {
-	if err := d.Router.Run(_defaultPort); err != nil {
+	if err := d.Router.Run(_port); err != nil {
 		return err
 	}
 	return nil
