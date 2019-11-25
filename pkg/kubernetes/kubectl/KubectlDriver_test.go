@@ -48,7 +48,7 @@ func TestKubectlDriver_ExecuteApply(t *testing.T) {
 		log.Fatal(err)
 	}
 	log.Printf("yaml: %s", yaml)
-	err = driver.Execute(KubectlOptionApply, yaml, "default")
+	err = driver.Execute(Apply, yaml, "default")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +67,7 @@ func TestKubectlDriver_ExecuteDelete(t *testing.T) {
 		log.Fatal(err)
 	}
 	log.Printf("yaml: %s", yaml)
-	err = driver.Execute(KubectlOptionDelete, yaml, "default")
+	err = driver.Execute(Delete, yaml, "default")
 	if err != nil {
 		log.Fatal(err)
 	}
