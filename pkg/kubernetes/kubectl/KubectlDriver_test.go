@@ -8,7 +8,7 @@ import (
 
 func TestKubectlDriver_DeserializeYamlToObject(t *testing.T) {
 	driver := NewTestKubectlDriver()
-	object, err := DeserializeYamlToObject(UseDeploymentManifest, &apps.Deployment{})
+	object, err := driver.DeserializeYamlToObject(UseDeploymentManifest, &apps.Deployment{})
 	if err != nil {
 		panic(err)
 	}
@@ -23,12 +23,12 @@ func TestKubectlDriver_DeserializeYamlToObject(t *testing.T) {
 
 func TestKubectlDriver_DecodeObjectToYaml(t *testing.T) {
 	driver := NewTestKubectlDriver()
-	object, err := DeserializeYamlToObject(UseDeploymentManifest, &apps.Deployment{})
+	object, err := driver.DeserializeYamlToObject(UseDeploymentManifest, &apps.Deployment{})
 	if err != nil {
 		panic(err)
 	}
 	deployment := object.(*apps.Deployment)
-	yaml, err := DecodeObjectToYaml(deployment)
+	yaml, err := driver.DecodeObjectToYaml(deployment)
 	if err != nil {
 		panic(err)
 	}
@@ -37,18 +37,18 @@ func TestKubectlDriver_DecodeObjectToYaml(t *testing.T) {
 
 func TestKubectlDriver_ExecuteApply(t *testing.T) {
 	driver := NewTestKubectlDriver()
-	object, err := DeserializeYamlToObject(UseDeploymentManifest, &apps.Deployment{})
+	object, err := driver.DeserializeYamlToObject(UseDeploymentManifest, &apps.Deployment{})
 	if err != nil {
 		log.Fatal(err)
 	}
 	deployment := object.(*apps.Deployment)
 	//deployment.Name = "tarako-chan"
-	yaml, err := DecodeObjectToYaml(deployment)
+	yaml, err := driver.DecodeObjectToYaml(deployment)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("yaml: %s", yaml)
-	err = Execute(KubectlOptionApply, yaml, "default")
+	err = driver.Execute(KubectlOptionApply, yaml, "default")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,18 +56,18 @@ func TestKubectlDriver_ExecuteApply(t *testing.T) {
 
 func TestKubectlDriver_ExecuteDelete(t *testing.T) {
 	driver := NewTestKubectlDriver()
-	object, err := DeserializeYamlToObject(UseDeploymentManifest, &apps.Deployment{})
+	object, err := driver.DeserializeYamlToObject(UseDeploymentManifest, &apps.Deployment{})
 	if err != nil {
 		log.Fatal(err)
 	}
 	deployment := object.(*apps.Deployment)
 	//deployment.Name = "tarako-chan"
-	yaml, err := DecodeObjectToYaml(deployment)
+	yaml, err := driver.DecodeObjectToYaml(deployment)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("yaml: %s", yaml)
-	err = Execute(KubectlOptionDelete, yaml, "default")
+	err = driver.Execute(KubectlOptionDelete, yaml, "default")
 	if err != nil {
 		log.Fatal(err)
 	}
