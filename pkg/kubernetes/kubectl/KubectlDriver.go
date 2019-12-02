@@ -153,7 +153,7 @@ func (d Driver) DeserializeYamlToObject(option string, targetObject runtime.Obje
 
 // DecodeObjectToYaml is
 func (d Driver) DecodeObjectToYaml(targetObject runtime.Object) (string, error) {
-	serializer := json.NewSerializerWithOptions(json.DefaultMetaFactory, scheme.Scheme, scheme.Scheme, json.SerializerOptions{Yaml: true})
+	serializer := NewSerializerWithOptions(DefaultMetaFactory, scheme.Scheme, scheme.Scheme, SerializerOptions{Yaml: true})
 	var buffer bytes.Buffer
 	if err := serializer.Encode(targetObject, &buffer); err != nil {
 		return "", err
