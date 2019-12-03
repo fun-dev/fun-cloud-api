@@ -17,6 +17,10 @@ type MySQLxDriver struct {
 	DB               *sqlx.DB
 }
 
+type IMySQLXDriver interface {
+	Database() *sqlx.DB
+}
+
 func (m *MySQLxDriver) Init() {
 	m.ConnectionString = _connectionString
 	m.DataSource = _targetDatabase
@@ -25,12 +29,8 @@ func (m *MySQLxDriver) Init() {
 	}
 }
 
-//type IMysqlDriver interface {
-//	CreateConnection() error
-//}
-
-func NewMysqlDriver() MySQLxDriver {
-	result := MySQLxDriver{}
+func NewMysqlDriver() IMySQLXDriver {
+	result := &MySQLxDriver{}
 	result.Init()
 	return result
 }
