@@ -11,6 +11,8 @@ services:
       - redis
     volumes:
       - ../.:.
+    env_file:
+      - ../configs/container/dev.env
   redis:
     container_name: "redis"
     image: redis:latest
