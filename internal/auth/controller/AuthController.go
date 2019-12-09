@@ -12,7 +12,7 @@ type UserController struct {
 	GoogleUserName string `db:"google_name",json:"google_name"`
 	AccessToken    string `db:"access_token",json:"access_token"`
 	IconURL        string `db:"icon_url",json:"icon_url"`
-	DataStore      IUserDataStore
+	User IUser
 }
 
 type IUserController interface {

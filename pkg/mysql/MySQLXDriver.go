@@ -1,13 +1,14 @@
 package mysql
 
 import (
-	"github.com/jmoiron/sqlx"
 	"log"
 	"os"
+
+	"github.com/jmoiron/sqlx"
 )
 
 var (
-	_targetDatabase = os.Getenv("TARGET_DATABASE")
+	_targetDatabase   = os.Getenv("TARGET_DATABASE")
 	_connectionString = os.Getenv("MYSQL_CONNECTION_STRING")
 )
 
