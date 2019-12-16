@@ -11,15 +11,16 @@ var (
 	_connectionString = os.Getenv("MYSQL_CONNECTION_STRING")
 ) 
 
-type MySQLxDriver struct {
+type (
+MySQLxDriver struct {
 	ConnectionString string
 	DataSource       string
 	db               *sqlx.DB
 }
-
-type IMySQLXDriver interface {
+  IMySQLXDriver interface {
 	DB() *sqlx.DB
 }
+)
 
 func (m *MySQLxDriver) Init() error{
 	m.ConnectionString = _connectionString

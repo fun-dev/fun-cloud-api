@@ -2,8 +2,8 @@ package controller
 
 import (
 	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/fun-dev/fun-cloud-api/internal/auth/model"
 )
 
 type (
@@ -13,7 +13,7 @@ type (
 	AccessToken    string `db:"access_token",json:"access_token"`
 	IconURL        string `db:"icon_url",json:"icon_url"`
 
-	User IUser
+	User model.IUser
 	}
 
 	IUserController interface {
@@ -22,7 +22,7 @@ type (
 	}
 )
 
-func NewUserController(user IUser) IUserController {
+func NewUserController(user model.IUser) IUserController {
 	return &UserController{User: user}
 }
 
