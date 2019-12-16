@@ -10,7 +10,7 @@ import (
 var (
 	_targetDatabase   = os.Getenv("TARGET_DATABASE")
 	_connectionString = os.Getenv("MYSQL_CONNECTION_STRING")
-)
+) 
 
 type MySQLxDriver struct {
 	ConnectionString string

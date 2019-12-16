@@ -6,13 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 type UserController struct {
 	Name           string `db:"name",json:"name"`
 	GoogleUserName string `db:"google_name",json:"google_name"`
 	AccessToken    string `db:"access_token",json:"access_token"`
 	IconURL        string `db:"icon_url",json:"icon_url"`
-	User IUser
+	User           IUser
 }
 
 type IUserController interface {
