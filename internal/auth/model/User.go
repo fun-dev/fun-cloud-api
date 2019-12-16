@@ -6,6 +6,8 @@ import (
 
 type (
 	IUser interface {
+		//TODO: implement User.Create by MySQLDriver
+		Create(item User) error
 		GetByAccessToken(accessToken string) (*User, error)
 	}
 	User struct {
@@ -34,7 +36,7 @@ func NewUserWithMySQLDriver(mysqlDriver mysql.IMySQLXDriver) IUser {
 func (u *User) GetByAccessToken(accessToken string) (*User, error) {
 	result := &User{}
 
-	if err := u.MySQLDriver.Database().Select(&result, "SELECT * FROM"); err != nil {
+	if err := u.MySQLDriver.DB().Select(&result, "SELECT * FROM"); err != nil {
 		return nil, err
 	}
 	return result, nil
