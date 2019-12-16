@@ -34,7 +34,10 @@ func NewUserWithMySQLDriver(mysqlDriver mysql.IMySQLXDriver) IUser {
 
 func (u *User) GetByAccessToken(accessToken string) (*User, error) {
 	result := &User{}
-	u.MySQLDriver.Database().Select(&result,"SELECT * FROM")
+
+	if err := u.MySQLDriver.Database().Select(&result,"SELECT * FROM"); err != nil{
+		return nil,err
+	}
 	return result,nil
 } 
 

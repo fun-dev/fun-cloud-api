@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"log"
 	"os"
 
 	"github.com/jmoiron/sqlx"
@@ -15,34 +14,37 @@ var (
 type MySQLxDriver struct {
 	ConnectionString string
 	DataSource       string
-	DB               *sqlx.DB
+	db               *sqlx.DB
 }
 
 type IMySQLXDriver interface {
-	Database() *sqlx.DB
+	DB() *sqlx.DB
 }
 
-func (m *MySQLxDriver) Init() {
+func (m *MySQLxDriver) Init() error{
 	m.ConnectionString = _connectionString
 	m.DataSource = _targetDatabase
 	if err := m.establishConnection(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
-func NewMysqlDriver() IMySQLXDriver {
+func NewMysqlDriver() (IMySQLXDriver, error) {
 	result := &MySQLxDriver{}
-	result.Init()
-	return result
+	if err := result.Init(); err != nil{
+		return nil,err
+	}
+	return result,nil
 }
 
-func (m *MySQLxDriver) Database() *sqlx.DB {
-	return m.DB
+func (m *MySQLxDriver) DB() *sqlx.DB {
+	return m.db
 }
 
 func (m MySQLxDriver) establishConnection() error {
 	var err error
-	m.DB, err = sqlx.Open(m.ConnectionString, m.DataSource)
+	m.db, err = sqlx.Open(m.ConnectionString, m.DataSource)
 	if err != nil {
 		return err
 	}
