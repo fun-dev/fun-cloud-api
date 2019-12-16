@@ -4,7 +4,6 @@ import (
 	"github.com/fun-dev/fun-cloud-api/pkg/mysql"
 )
 
-
 type (
 	IUser interface {
 		GetByAccessToken(accessToken string) (*User, error)
@@ -35,21 +34,17 @@ func NewUserWithMySQLDriver(mysqlDriver mysql.IMySQLXDriver) IUser {
 func (u *User) GetByAccessToken(accessToken string) (*User, error) {
 	result := &User{}
 
-	if err := u.MySQLDriver.Database().Select(&result,"SELECT * FROM"); err != nil{
-		return nil,err
+	if err := u.MySQLDriver.Database().Select(&result, "SELECT * FROM"); err != nil {
+		return nil, err
 	}
-	return result,nil
-} 
+	return result, nil
+}
 
 //func NewUser(User.IconUrl,User.GoogleName,User.AccesesToken){
 //
 //}
-func NewUser() IUser{
- 	result:=&User{}
- 	//result.Init()
- 	return result
+func NewUser() IUser {
+	result := &User{}
+	//result.Init()
+	return result
 }
-
-
-
-

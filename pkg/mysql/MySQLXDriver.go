@@ -9,20 +9,20 @@ import (
 var (
 	_targetDatabase   = os.Getenv("TARGET_DATABASE")
 	_connectionString = os.Getenv("MYSQL_CONNECTION_STRING")
-) 
-
-type (
-MySQLxDriver struct {
-	ConnectionString string
-	DataSource       string
-	db               *sqlx.DB
-}
-  IMySQLXDriver interface {
-	DB() *sqlx.DB
-}
 )
 
-func (m *MySQLxDriver) Init() error{
+type (
+	MySQLxDriver struct {
+		ConnectionString string
+		DataSource       string
+		db               *sqlx.DB
+	}
+	IMySQLXDriver interface {
+		DB() *sqlx.DB
+	}
+)
+
+func (m *MySQLxDriver) Init() error {
 	m.ConnectionString = _connectionString
 	m.DataSource = _targetDatabase
 	if err := m.establishConnection(); err != nil {
@@ -33,10 +33,10 @@ func (m *MySQLxDriver) Init() error{
 
 func NewMysqlDriver() (IMySQLXDriver, error) {
 	result := &MySQLxDriver{}
-	if err := result.Init(); err != nil{
-		return nil,err
+	if err := result.Init(); err != nil {
+		return nil, err
 	}
-	return result,nil
+	return result, nil
 }
 
 func (m *MySQLxDriver) DB() *sqlx.DB {

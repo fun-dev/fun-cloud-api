@@ -1,19 +1,19 @@
 package controller
 
 import (
-	"net/http"
-	"github.com/gin-gonic/gin"
 	"github.com/fun-dev/fun-cloud-api/internal/auth/model"
+	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type (
 	UserController struct {
-	Name           string `db:"name",json:"name"`
-	GoogleUserName string `db:"google_name",json:"google_name"`
-	AccessToken    string `db:"access_token",json:"access_token"`
-	IconURL        string `db:"icon_url",json:"icon_url"`
+		Name           string `db:"name",json:"name"`
+		GoogleUserName string `db:"google_name",json:"google_name"`
+		AccessToken    string `db:"access_token",json:"access_token"`
+		IconURL        string `db:"icon_url",json:"icon_url"`
 
-	User model.IUser
+		User model.IUser
 	}
 
 	IUserController interface {
