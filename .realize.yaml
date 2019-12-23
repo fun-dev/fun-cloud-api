@@ -24,3 +24,24 @@ schema:
         - vendor
         - docs
         - developments
+  - name: auth
+      path: .
+      commands:
+        install:
+          status: true
+          dir: cmd/auth
+        run:
+          status: true
+          method: /go/bin/auth
+      watcher:
+        extensions:
+          - go
+        paths:
+          - /
+        ignored_paths:
+          - .git
+          - .realize
+          - .idea
+          - vendor
+          - docs
+          - developments

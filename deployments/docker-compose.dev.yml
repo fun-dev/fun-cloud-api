@@ -13,6 +13,29 @@ services:
       - ../.:.
     env_file:
       - ../configs/container/dev.env
+  auth:
+    container_name: "auth"
+    build:
+      context: ..
+      dockerfile: ../build/auth/Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../.:.
+  db:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: auth
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./auth/mysql/sql:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
   redis:
     container_name: "redis"
     image: redis:latest
