@@ -11,42 +11,44 @@ type (
 		GetByAccessToken(accessToken string) (*User, error)
 	}
 	User struct {
-		IconUrl      string `json:"icon_url" db:"icon_url"`
-		GoogleName   string `json:"google_name" db:"google_name"`
-		AccesesToken string `json:"-" db:"accesstoken, primarykey"`
+		BaseModel
+		IconUrl     string `json:"icon_url" db:"icon_url"`
+		GoogleName  string `json:"google_name" db:"google_name"`
+		AccessToken string `json:"-" db:"access_token, primarykey"`
 		// --- other struct ---
 		MySQLDriver mysql.IMySQLXDriver
 	}
 )
 
+// Constructor with DB Connection
 func NewUserWithMySQLDriver(mysqlDriver mysql.IMySQLXDriver) IUser {
 	result := &User{}
 	result.MySQLDriver = mysqlDriver
 	return result
 }
 
-//func NewUser(iconURL, googleName, accessToken) IUser {
-//	result := &User{}
-//	result.IconUrl = iconURL
-//	result.GoogleName = googleName
-//	result.AccesesToken = accessToken
-//	return result
-//}
+// Normal Constructor
+func NewUser(iconUrl, googleName, accessToken string) *User {
+	return &User{
+		IconUrl:     iconUrl,
+		GoogleName:  googleName,
+		AccessToken: accessToken,
+	}
+}
 
 func (u *User) GetByAccessToken(accessToken string) (*User, error) {
 	result := &User{}
-
-	if err := u.MySQLDriver.DB().Select(&result, "SELECT * FROM"); err != nil {
+	if err := u.MySQLDriver.DB().Get(&result, "SELECT * FROM users WHERE access_token=$1", accessToken); err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-//func NewUser(User.IconUrl,User.GoogleName,User.AccesesToken){
-//
-//}
-func NewUser() IUser {
-	result := &User{}
-	//result.Init()
-	return result
+func (u *User) Create(item User) error {
+	// insert user model to db by sqlx
+	_, err := u.MySQLDriver.DB().NamedExec("INSERT INTO users (icon_url, google_name, access_token) VALUES (:icon_url, :google_name, :access_token)", &item)
+	if err != nil {
+		//TODO: implement error handling
+	}
+	return nil
 }
