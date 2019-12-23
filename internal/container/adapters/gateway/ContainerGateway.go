@@ -19,8 +19,9 @@ import (
 // ContainerGateway is
 type ContainerGateway struct {
 	K8SProvider kubernetes.IK8SProvider
-	Redis redis.Driver
+	Redis       redis.Driver
 }
+
 // NewContainerGateway is
 func NewContainerGateway(k kubernetes.IK8SProvider, r redis.Driver) container.Repository {
 	return &ContainerGateway{
@@ -62,10 +63,10 @@ func (g ContainerGateway) GetAllByUserID(ctx context.Context, id, namespace stri
 	for i, d := range deploymentList.Items {
 		podContainer := d.Spec.Template.Spec.Containers[0]
 		resultContainer := &container.Container{
-			UID: podContainer.Name,
-			ImageName: podContainer.Image,
+			UID:         podContainer.Name,
+			ImageName:   podContainer.Image,
 			ConnectInfo: d.SelfLink, // TODO: fix deprecated
-			Status: d.Status.String(),
+			Status:      d.Status.String(),
 		}
 		resultContainers[i] = resultContainer
 	}
@@ -76,7 +77,7 @@ func (g ContainerGateway) Create(ctx context.Context, id, imageName, namespace s
 	object, _ := g.K8SProvider.Kubectl().DeserializeYamlToObject(kubectl.UseDeploymentManifest, &apps.Deployment{})
 	deployment := object.(*apps.Deployment)
 	podContainer := core.Container{
-		Name: id,
+		Name:  id,
 		Image: imageName,
 	}
 	deployment.Spec.Template.Spec.Containers[0] = podContainer

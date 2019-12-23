@@ -1,0 +1,9 @@
+FROM golang:1.13
+# download kubectl binary
+WORKDIR /fun-cloud-api
+COPY . .
+# load variable for develgitopment
+RUN set -a && source ./configs/container/dev.env
+RUN go get github.com/pilu/fresh
+EXPOSE 3000
+CMD ["fresh"]

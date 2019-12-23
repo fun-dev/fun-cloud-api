@@ -23,15 +23,15 @@ var (
 	_deploymentManifestPath = os.Getenv("KUBECTL_DEPLOYMENT_MANIFEST_PATH")
 	_kubeconfigPath         = os.Getenv("KUBECTL_CONFIG_PATH")
 	// --- For Test --- //
-	_currentDir, _ = os.Getwd()
+	_currentDir, _                 = os.Getwd()
 	_defaultBinaryPath             = "/snap/bin/kubectl"
 	_defaultKubeconfigPath         = _currentDir + "/kubeconfig"
 	_defaultDeploymentManifestPath = "./manifest/pod-deployment-template.yaml"
 )
 
 const (
-	Apply    = "KUBECTL_OPTION_APPLY"
-	Delete   = "KUBECTL_OPTION_DELETE"
+	Apply                 = "KUBECTL_OPTION_APPLY"
+	Delete                = "KUBECTL_OPTION_DELETE"
 	UseDeploymentManifest = "USE_DEPLOYMENT_MANIFEST"
 )
 

@@ -16,7 +16,7 @@ type (
 		IconURL        string `db:"icon_url",json:"icon_url"`
 
 		User model.IUser
-		Jwt jwt.IJwt
+		Jwt  jwt.IJwt
 	}
 
 	IUserController interface {
@@ -53,13 +53,15 @@ func (u UserController) POST(c *gin.Context) {
 	if accessToken == term.NullString {
 		//TODO: implement error handling
 	}
-	_, err := u.Jwt.InspectGoogleIdToken(accessToken)
+	claim, err := u.Jwt.InspectGoogleIdToken(accessToken)
 	if err != nil {
 		//TODO: implement error handling
+		return
 	}
-	input := model.NewUser("", "", "")
+	input := model.NewUser(claim.Picture, claim.Name, accessToken)
 	if err := u.User.Create(*input); err != nil {
 		//TODO: implement error handling
+		return
 	}
 	c.String(http.StatusCreated, "")
 }
