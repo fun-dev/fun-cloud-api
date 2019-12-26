@@ -23,15 +23,15 @@ var (
 	_deploymentManifestPath = os.Getenv("KUBECTL_DEPLOYMENT_MANIFEST_PATH")
 	_kubeconfigPath         = os.Getenv("KUBECTL_CONFIG_PATH")
 	// --- For Test --- //
-	_currentDir, _ = os.Getwd()
+	_currentDir, _                 = os.Getwd()
 	_defaultBinaryPath             = "/snap/bin/kubectl"
 	_defaultKubeconfigPath         = _currentDir + "/kubeconfig"
 	_defaultDeploymentManifestPath = "./manifest/pod-deployment-template.yaml"
 )
 
 const (
-	Apply    = "KUBECTL_OPTION_APPLY"
-	Delete   = "KUBECTL_OPTION_DELETE"
+	Apply                 = "KUBECTL_OPTION_APPLY"
+	Delete                = "KUBECTL_OPTION_DELETE"
 	UseDeploymentManifest = "USE_DEPLOYMENT_MANIFEST"
 )
 
@@ -153,7 +153,7 @@ func (d Driver) DeserializeYamlToObject(option string, targetObject runtime.Obje
 
 // DecodeObjectToYaml is
 func (d Driver) DecodeObjectToYaml(targetObject runtime.Object) (string, error) {
-	serializer := json.NewSerializerWithOptions(json.DefaultMetaFactory, scheme.Scheme, scheme.Scheme, json.SerializerOptions{Yaml: true})
+	serializer := NewSerializerWithOptions(DefaultMetaFactory, scheme.Scheme, scheme.Scheme, SerializerOptions{Yaml: true})
 	var buffer bytes.Buffer
 	if err := serializer.Encode(targetObject, &buffer); err != nil {
 		return "", err

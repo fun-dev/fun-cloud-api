@@ -4,8 +4,8 @@ import (
 	"github.com/fun-dev/ccms/internal/container/adapters/controller"
 	"github.com/fun-dev/ccms/internal/container/adapters/gateway"
 	"github.com/fun-dev/ccms/internal/container/application/usecase"
-	driver2 "github.com/fun-dev/ccms/internal/container/infrastructure/server"
 	provider2 "github.com/fun-dev/ccms/internal/container/infrastructure/provider"
+	driver2 "github.com/fun-dev/ccms/internal/container/infrastructure/server"
 	"github.com/fun-dev/ccms/pkg/redis"
 	"go.uber.org/dig"
 )

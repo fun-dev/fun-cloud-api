@@ -2,6 +2,5 @@ package term
 
 const (
 	NullString = ""
-	HasNoItem = 0
+	HasNoItem  = 0
 )
-

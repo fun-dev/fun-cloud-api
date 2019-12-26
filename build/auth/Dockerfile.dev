@@ -1,0 +1,7 @@
+FROM golang:1.13.4-alpine
+WORKDIR /fun-cloud-api
+COPY . .
+# --- download realize (hot reload) ---
+RUN apk add --no-cache git && go get gopkg.in/urfave/cli.v2@master && go get github.com/oxequa/realize
+EXPOSE 3000
+CMD ["realize", "start"," --name='auth'"," --run"]

@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	_port = os.Getenv("SERVER_PORT")
-	_router      = gin.Default()
+	_port   = os.Getenv("SERVER_PORT")
+	_router = gin.Default()
 )
 
 type IContainerController interface {
