@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ccms.iml" filepath="$PROJECT_DIR$/.idea/ccms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/fun-cloud-api.iml" filepath="$PROJECT_DIR$/.idea/fun-cloud-api.iml" />
     </modules>
   </component>
 </project>
