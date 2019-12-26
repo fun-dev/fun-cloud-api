@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/fun-dev/fun-cloud-api/internal/container/domain/auth"
+	"github.com/fun-dev/fun-cloud-api/pkg/auth"
 	"github.com/fun-dev/fun-cloud-api/internal/container/domain/container"
 )
 

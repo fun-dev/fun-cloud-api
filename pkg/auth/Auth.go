@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"github.com/fun-dev/ccms/internal/container/adapters/gateway/repository"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,20 +10,20 @@ type (
 		EnsureIsExist() gin.HandlerFunc
 	}
 
-	AuthService struct {
-		repository.AuthRepository
+	Service struct {
+		AuthRepository Repository
 	}
 )
 
-func NewAuthService(aRepo repository.AuthRepository) IAuthService {
-	return &AuthService{aRepo}
+func NewAuthService(authRepo Repository) IAuthService {
+	return &Service{authRepo}
 }
 
-func (a AuthService) EnsureIsExist() gin.HandlerFunc {
+func (s Service) EnsureIsExist() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		key := "Authorization"
 		accessToken := c.GetHeader(key)
-		userID, err := a.AuthRepository.GetUserIDByToken(accessToken)
+		userID, err := s.AuthRepository.GetUserIDByToken(accessToken)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "your access token is not found"})
 			c.Abort()
