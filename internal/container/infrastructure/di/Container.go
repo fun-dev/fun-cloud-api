@@ -4,7 +4,7 @@ import (
 	"github.com/fun-dev/fun-cloud-api/internal/container/adapters/controller"
 	"github.com/fun-dev/fun-cloud-api/internal/container/adapters/gateway"
 	"github.com/fun-dev/fun-cloud-api/internal/container/application/usecase"
-	driver2 "github.com/fun-dev/fun-cloud-api/internal/container/infrastructure/server"
+	"github.com/fun-dev/fun-cloud-api/internal/container/infrastructure/server"
 	"github.com/fun-dev/fun-cloud-api/pkg/kubernetes"
 	"github.com/fun-dev/fun-cloud-api/pkg/kubernetes/kubectl"
 	"github.com/fun-dev/fun-cloud-api/pkg/redis"
@@ -49,7 +49,7 @@ func NewContainer() (*dig.Container, error) {
 		return nil, err
 	}
 	// --- Server Driver --- //
-	err = c.Provide(driver2.NewGinDriver)
+	err = c.Provide(server.NewGinDriver)
 	if err != nil {
 		return nil, err
 	}
