@@ -16,12 +16,12 @@ services:
   auth:
     container_name: "auth"
     build:
-      context: ..
-      dockerfile: ../build/auth/Dockerfile.dev
+      context: ../
+      dockerfile: ./build/auth/Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:
-      - ../.:.
+      - ..:/fun-cloud-api
   db:
     image: mysql:5.7
     container_name: mysql

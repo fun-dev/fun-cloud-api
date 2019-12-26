@@ -3,15 +3,15 @@ settings:
     force: false
     interval: 0s
 schema:
-  - name: container
+  - name: auth
     path: .
     commands:
       install:
         status: true
-        dir: cmd/container
+        dir: cmd/auth
       run:
         status: true
-        method: /go/bin/container
+        method: /go/bin/auth
     watcher:
       extensions:
         - go
@@ -19,29 +19,10 @@ schema:
         - /
       ignored_paths:
         - .git
-        - .realize
         - .idea
-        - vendor
-        - docs
-        - developments
-  - name: auth
-      path: .
-      commands:
-        install:
-          status: true
-          dir: cmd/auth
-        run:
-          status: true
-          method: /go/bin/auth
-      watcher:
-        extensions:
-          - go
-        paths:
-          - /
-        ignored_paths:
-          - .git
-          - .realize
-          - .idea
-          - vendor
-          - docs
-          - developments
+        - .realize
+        - internal/container
+        - cmd/container
+        - configs
+        - scripts
+        - deployments

@@ -8,3 +8,6 @@ down:
 	docker-compose -f deployments/docker-compose.dev.yml down -v
 up-db:
 	docker-compose -f deployments/docker-compose.dev.yml up db
+up-auth:
+	docker-compose -f deployments/docker-compose.dev.yml build auth
+	docker-compose -f deployments/docker-compose.dev.yml up auth
