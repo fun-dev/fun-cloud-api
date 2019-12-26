@@ -4,13 +4,13 @@ services:
     container_name: "container"
     build:
       context: ..
-      dockerfile: ../build/container/Dockerfile.dev
+      dockerfile: ./build/container/Dockerfile.dev
     ports:
       - "3000:3000"
     depends_on:
       - redis
     volumes:
-      - ../.:.
+      - ../:/fun-cloud-api
     env_file:
       - ../configs/container/dev.env
   auth:
