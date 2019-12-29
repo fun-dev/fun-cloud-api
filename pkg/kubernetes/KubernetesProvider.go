@@ -1,59 +1,48 @@
 package kubernetes
 
 import (
-	"flag"
-	"github.com/fun-dev/fun-cloud-api/pkg/kubernetes/kubectl"
+	"github.com/tozastation/kw"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
-	"k8s.io/client-go/util/homedir"
-	"log"
-	"path/filepath"
 )
 
 // Kubernetes Wrapper Class
 type (
 	IK8SProvider interface {
-		Client() kubernetes.Clientset
-		Kubectl() kubectl.IKubectlDriver
+		Client() *kubernetes.Clientset
+		Kubectl() *kw.Kubectl
+		Manifest() *kw.Manifest
 	}
 	Provider struct {
-		client  *kubernetes.Clientset
-		kubectl kubectl.IKubectlDriver
+		client   *kubernetes.Clientset
+		kubectl  *kw.Kubectl
+		manifest *kw.Manifest
 	}
 )
 
-func NewKubernetesProvider() *Provider {
+func NewKubernetesProvider() IK8SProvider {
 	result := &Provider{}
 	// --- inject object --- //
-	result.kubectl = kubectl.NewKubectlDriver()
-	if err := result.InitClient(); err != nil {
-		log.Fatal(err)
-	}
+	result.manifest, _ = kw.NewManifest()
 	return result
 }
 
-func (p *Provider) InitClient() error {
-	var kubeconfig *string
-	if home := homedir.HomeDir(); home != "" {
-		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
-	} else {
-		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
-	}
-	flag.Parse()
-	buildConfig, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+func (p *Provider) InitKubectl(binaryPath, kubeConfigPath string) error {
+	var err error
+	p.kubectl, err = kw.New(binaryPath, kubeConfigPath)
 	if err != nil {
-		return err
-	}
-	if p.client, err = kubernetes.NewForConfig(buildConfig); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (p Provider) Client() kubernetes.Clientset {
-	return *p.client
+func (p *Provider) Client() *kubernetes.Clientset {
+	return p.client
 }
 
-func (p Provider) Kubectl() kubectl.IKubectlDriver {
+func (p *Provider) Kubectl() *kw.Kubectl {
 	return p.kubectl
+}
+
+func (p *Provider) Manifest() *kw.Manifest {
+	return p.manifest
 }
