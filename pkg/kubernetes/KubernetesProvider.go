@@ -11,6 +11,7 @@ type (
 		Client() *kubernetes.Clientset
 		Kubectl() *kw.Kubectl
 		Manifest() *kw.Manifest
+		InitKubectl(binaryPath, kubeConfigPath string) error
 	}
 	Provider struct {
 		client   *kubernetes.Clientset

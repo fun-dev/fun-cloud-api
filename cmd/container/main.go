@@ -1,24 +1,36 @@
 package container
 
 import (
-	"github.com/fun-dev/fun-cloud-api/internal/container/infrastructure/di"
+	"github.com/fun-dev/fun-cloud-api/internal/container/adapters/controller"
+	"github.com/fun-dev/fun-cloud-api/internal/container/adapters/gateway"
+	"github.com/fun-dev/fun-cloud-api/internal/container/application/usecase"
 	"github.com/fun-dev/fun-cloud-api/internal/container/infrastructure/server"
+	"github.com/fun-dev/fun-cloud-api/pkg/kubernetes"
+	"github.com/fun-dev/fun-cloud-api/pkg/mongo"
 	"log"
 )
 
-func main() {
-	// --- initialize program --- //
-	c, err := di.NewContainer()
-	if err != nil {
+var (
+	_k8sProvider   = kubernetes.NewKubernetesProvider()
+	_mongoDriver   = mongo.NewMongoDriver()
+	_containerRepo = gateway.NewContainerGateway(_k8sProvider, _mongoDriver)
+	_authRepo      = gateway.NewAuthGateway()
+	_read          = usecase.NewContainerReadInteractor()
+	_create        = usecase.NewContainerCreateInteractor(_containerRepo, _authRepo)
+	_delete        = usecase.NewContainerDeleteInteractor(_containerRepo, _authRepo)
+	_ctrl          = controller.NewContainerController(_read, _create, _delete)
+	serverDriver   = server.NewGinDriver(_ctrl)
+)
+
+func init() {
+	if err := _k8sProvider.InitKubectl("", ""); err != nil {
 		log.Fatal(err)
 	}
-	err = c.Provide(func(server *server.GinDriver) {
-		err := server.Run()
-		if err != nil {
-			log.Fatal(err)
-		}
-	})
-	if err != nil {
+}
+
+func main() {
+	// --- initialize program --- //
+	if err := serverDriver.Run(); err != nil {
 		log.Fatal(err)
 	}
 }

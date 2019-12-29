@@ -13,6 +13,8 @@ var (
 )
 
 type IContainerController interface {
+	Get(c *gin.Context)
+	Post(c *gin.Context)
 	Delete(c *gin.Context)
 }
 
@@ -21,9 +23,10 @@ type GinDriver struct {
 	Router        *gin.Engine
 }
 
-func NewGinDriver() *GinDriver {
+func NewGinDriver(ctrl IContainerController) *GinDriver {
 	result := &GinDriver{}
 	result.Router = _router
+	result.ContainerCtrl = ctrl
 	if err := result.setupRouting(); err != nil {
 		log.Fatal(err)
 	}

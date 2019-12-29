@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/fun-dev/fun-cloud-api/internal/container/application/usecase"
 	"github.com/fun-dev/fun-cloud-api/internal/container/infrastructure/apperror/ctlerr"
+	"github.com/fun-dev/fun-cloud-api/internal/container/infrastructure/server"
 	"github.com/fun-dev/fun-cloud-api/pkg/logging"
 	"github.com/fun-dev/fun-cloud-api/pkg/term"
 	"github.com/gin-gonic/gin"
@@ -13,21 +14,27 @@ import (
 // ContainerController is
 type (
 	ContainerController struct {
+		usecase.ContainerReadUsecase
 		usecase.ContainerCreateUsecase
 		usecase.ContainerDeleteUsecase
 	}
+
 	PostRequest struct {
 		ImageName string `json:"image_name"`
 	}
 )
 
-func NewContainerController(cCre usecase.ContainerCreateUsecase, cDel usecase.ContainerDeleteUsecase) *ContainerController {
+func NewContainerController(cRed usecase.ContainerReadUsecase,cCre usecase.ContainerCreateUsecase, cDel usecase.ContainerDeleteUsecase) server.IContainerController {
 	return &ContainerController{
+		cRed,
 		cCre,
 		cDel,
 	}
 }
 
+func (cc ContainerController) Get(c *gin.Context) {
+	panic("implement me")
+}
 // Post is
 // Header: key is Authorization
 // BODY: {"image_name": "nginx:latest"}
