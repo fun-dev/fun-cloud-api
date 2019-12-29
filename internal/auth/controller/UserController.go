@@ -2,6 +2,8 @@ package controller
 
 import (
 	"github.com/fun-dev/fun-cloud-api/internal/auth/model"
+	"github.com/fun-dev/fun-cloud-api/pkg/jwt"
+	"github.com/fun-dev/fun-cloud-api/pkg/term"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,6 +16,7 @@ type (
 		IconURL        string `db:"icon_url",json:"icon_url"`
 
 		User model.IUser
+		Jwt  jwt.IJwt
 	}
 
 	IUserController interface {
@@ -46,5 +49,19 @@ func (u UserController) GET(c *gin.Context) {
 }
 
 func (u UserController) POST(c *gin.Context) {
-
+	accessToken := c.GetHeader("Authorization")
+	if accessToken == term.NullString {
+		//TODO: implement error handling
+	}
+	claim, err := u.Jwt.InspectGoogleIdToken(accessToken)
+	if err != nil {
+		//TODO: implement error handling
+		return
+	}
+	input := model.NewUser(claim.Picture, claim.Name, accessToken)
+	if err := u.User.Create(*input); err != nil {
+		//TODO: implement error handling
+		return
+	}
+	c.String(http.StatusCreated, "")
 }

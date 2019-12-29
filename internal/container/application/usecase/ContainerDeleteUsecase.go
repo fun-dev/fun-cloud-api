@@ -14,8 +14,8 @@ type (
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerDeleteInteractor struct {
-		cRepo 	container.Repository
-		aRepo      auth.AuthRepository
+		cRepo container.Repository
+		aRepo auth.AuthRepository
 	}
 )
 
