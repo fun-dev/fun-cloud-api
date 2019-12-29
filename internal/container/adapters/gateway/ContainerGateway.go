@@ -9,7 +9,7 @@ import (
 	"github.com/fun-dev/fun-cloud-api/pkg/kubernetes"
 	"github.com/fun-dev/fun-cloud-api/pkg/kubernetes/kubectl"
 	"github.com/fun-dev/fun-cloud-api/pkg/logging"
-	"github.com/fun-dev/fun-cloud-api/pkg/redis"
+	"github.com/fun-dev/fun-cloud-api/pkg/mongo"
 	"github.com/fun-dev/fun-cloud-api/pkg/term"
 	apps "k8s.io/api/apps/v1"
 	core "k8s.io/api/core/v1"
@@ -19,14 +19,14 @@ import (
 // ContainerGateway is
 type ContainerGateway struct {
 	K8SProvider kubernetes.IK8SProvider
-	Redis       redis.Driver
+	Mongo mongo.IMongoDriver
 }
 
 // NewContainerGateway is
-func NewContainerGateway(k kubernetes.IK8SProvider, r redis.Driver) container.Repository {
+func NewContainerGateway(k kubernetes.IK8SProvider, m mongo.IMongoDriver) container.Repository {
 	return &ContainerGateway{
 		k,
-		r,
+		m,
 	}
 }
 

@@ -14,3 +14,5 @@ up-auth:
 up-container:
 	docker-compose -f deployments/docker-compose.dev.yml build container
 	docker-compose -f deployments/docker-compose.dev.yml up container
+gen-mock:
+	mockgen -source ./internal/container/domain/container/ContainerRepository.go -destination ./internal/container/application/usecase/repository_mock/ContainerRepository.go

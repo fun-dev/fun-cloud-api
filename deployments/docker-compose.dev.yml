@@ -2,17 +2,40 @@ version: '3'
 services:
   container:
     container_name: "container"
+    privileged: true
     build:
       context: ..
       dockerfile: ./build/container/Dockerfile.dev
     ports:
       - "3000:3000"
     depends_on:
-      - redis
+      - container_mongo
+      - container_mongo_express
     volumes:
       - ../:/fun-cloud-api
     env_file:
       - ../configs/container/dev.env
+    command: '/bin/ash -c sleep 5 && sh ./build/container/dev_init.sh'
+  container_mongo:
+    container_name: "container_mongo"
+    image: mongo
+    restart: always
+    env_file:
+      - ../configs/container/dev.env
+    ports:
+      - 27017:27017
+    volumes:
+      - ./db:/data/db
+      - ./configdb:/data/configdb
+  container_mongo_express:
+    container_name: "container_mongo_express"
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    env_file:
+      - ../configs/container/dev.env
+  # ---
   auth:
     container_name: "auth"
     build:
