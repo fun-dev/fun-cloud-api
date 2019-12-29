@@ -25,13 +25,6 @@ func NewUserWithMySQLDriver(mysqlDriver mysql.IMySQLXDriver) IUser {
 	return result
 }
 
-//func NewUser(iconURL, googleName, accessToken) IUser {
-//	result := &User{}
-//	result.IconUrl = iconURL
-//	result.GoogleName = googleName
-//	result.AccesesToken = accessToken
-//	return result
-//}
 
 func (u *User) GetByAccessToken(accessToken string) (*User, error) {
 	result := &User{}
@@ -42,11 +35,20 @@ func (u *User) GetByAccessToken(accessToken string) (*User, error) {
 	return result, nil
 }
 
-//func NewUser(User.IconUrl,User.GoogleName,User.AccesesToken){
-//
-//}
 func NewUser() IUser {
 	result := &User{}
 	//result.Init()
 	return result
 }
+
+//func NewUser(User.IconUrl,User.GoogleName,User.AccesesToken){
+//
+//}
+
+//func NewUser(iconURL, googleName, accessToken) IUser {
+//	result := &User{}
+//	result.IconUrl = iconURL
+//	result.GoogleName = googleName
+//	result.AccesesToken = accessToken
+//	return result
+//}
