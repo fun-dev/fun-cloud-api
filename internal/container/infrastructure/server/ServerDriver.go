@@ -41,9 +41,9 @@ func (d *GinDriver) setupRouting() error {
 	// --- Client should add /v1 at first on url
 	v1 := d.Router.Group("/v1")
 	// --- REST ENDPOINT --- //
-	v1.GET("/containers")
-	v1.POST("/containers")
-	v1.DELETE("/containers/:id", d.ContainerCtrl.Delete)
+	v1.GET("/containers", d.ContainerCtrl.Get)
+	v1.POST("/containers", d.ContainerCtrl.Post)
+	v1.DELETE("/containers/:container_id", d.ContainerCtrl.Delete)
 	return nil
 }
 

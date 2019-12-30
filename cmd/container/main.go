@@ -1,4 +1,4 @@
-package container
+package main
 
 import (
 	"github.com/fun-dev/fun-cloud-api/internal/container/adapters/controller"
@@ -15,7 +15,7 @@ var (
 	_mongoDriver   = mongo.NewMongoDriver()
 	_containerRepo = gateway.NewContainerGateway(_k8sProvider, _mongoDriver)
 	_authRepo      = gateway.NewAuthGateway()
-	_read          = usecase.NewContainerReadInteractor()
+	_read          = usecase.NewContainerReadInteractor(_containerRepo,_authRepo)
 	_create        = usecase.NewContainerCreateInteractor(_containerRepo, _authRepo)
 	_delete        = usecase.NewContainerDeleteInteractor(_containerRepo, _authRepo)
 	_ctrl          = controller.NewContainerController(_read, _create, _delete)
@@ -26,10 +26,14 @@ func init() {
 	if err := _k8sProvider.InitKubectl("", ""); err != nil {
 		log.Fatal(err)
 	}
+	if err := _k8sProvider.InitK8SClient(); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
 	// --- initialize program --- //
+	log.Printf("info: listing ...")
 	if err := serverDriver.Run(); err != nil {
 		log.Fatal(err)
 	}

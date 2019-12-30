@@ -1,14 +1,13 @@
 package usecase
 
 import (
-	"context"
 	"github.com/fun-dev/fun-cloud-api/internal/container/domain/container"
 	"github.com/fun-dev/fun-cloud-api/pkg/auth"
 )
 
 type (
 	ContainerCreateUsecase interface {
-		Execute(ctx context.Context, userID, imageName string) error
+		Execute(userID, imageName string) error
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerCreateInteractor struct {
@@ -21,7 +20,7 @@ func NewContainerCreateInteractor(cRepo container.Repository, aRepo auth.Reposit
 	return &ContainerCreateInteractor{cRepo, aRepo}
 }
 
-func (c ContainerCreateInteractor) Execute(ctx context.Context, userID, imageName string) error {
+func (c ContainerCreateInteractor) Execute(userID, imageName string) error {
 	// in this application, we use userID as kubernetes namespace.yaml
 	containerID, manifest, err := c.cRepo.Create(userID, imageName)
 	if err != nil {

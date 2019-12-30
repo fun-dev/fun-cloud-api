@@ -21,6 +21,6 @@ up-container:
 develop-container:
 	docker-compose -f deployments/docker-compose.dev.yml build container
 	docker-compose -f deployments/docker-compose.dev.yml up -d container_mongo container_mongo_express container
-	docker-compose -f deployments/docker-compose.dev.yml exec container ash
+	docker-compose -f deployments/docker-compose.dev.yml exec container sh ./build/container/dev_init.sh
 gen-mock:
 	mockgen -source ./internal/container/domain/container/ContainerRepository.go -destination ./internal/container/application/usecase/repository_mock/ContainerRepository.go

@@ -16,6 +16,7 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/onsi/ginkgo v1.11.0 // indirect
 	github.com/tidwall/pretty v1.0.0 // indirect
 	github.com/tozastation/kw v0.0.0-20191229150655-f8bb08c0199d
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
@@ -28,5 +29,6 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	k8s.io/api v0.17.0
 	k8s.io/apimachinery v0.17.0
-	k8s.io/client-go v11.0.0+incompatible
+	k8s.io/client-go v0.17.0
+	k8s.io/utils v0.0.0-20191217005138-9e5e9d854fcc // indirect
 )

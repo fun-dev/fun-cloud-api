@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	core "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"log"
 	"time"
 )
 
@@ -56,14 +57,30 @@ func (g ContainerGateway) GetAllByUserID(userID string) ([]*container.Container,
 }
 
 func (g ContainerGateway) Create(userID, imageName string) (containerID string, manifest string, err error) {
+	//TODO: implements imageName Validation
+	//TODO: update deployment manifest on store or create new deployment
+	ns, _ := g.K8SProvider.Client().CoreV1().Namespaces().Get(userID, v1.GetOptions{})
+	log.Printf("info: namespace is %v\n", ns.ObjectMeta.Name)
+	if ns.ObjectMeta.Name == term.NullString {
+		log.Printf("info: namespace is not found, next create namespace\n")
+		_, err = g.K8SProvider.Client().CoreV1().Namespaces().Create(&core.Namespace{
+			TypeMeta:   v1.TypeMeta{},
+			ObjectMeta: v1.ObjectMeta{
+				Name: userID,
+			},
+			Spec:       core.NamespaceSpec{},
+			Status:     core.NamespaceStatus{},
+		})
+		if err != nil {
+			return term.NullString, term.NullString, err
+		}
+	}
+	// create deployment manifest for user
 	containerID = uuid.NewUUID()
 	object, _ := g.K8SProvider.Manifest().NewDeploymentObject()
+	object.Name = containerID
 	object.Namespace = userID
-	podContainer := core.Container{
-		Name: containerID ,
-		Image: imageName,
-	}
-	object.Spec.Template.Spec.Containers[0] = podContainer
+	object.Spec.Template.Spec.Containers = []core.Container{{Name: containerID, Image: imageName}}
 	manifest, _ = g.K8SProvider.Manifest().TransformObjectToYaml(object)
 	_, ok := g.K8SProvider.Kubectl().Apply(manifest)
 	if !ok {

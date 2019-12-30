@@ -1,16 +1,15 @@
 package usecase
 
 import (
-	"context"
 	"fmt"
-	"github.com/fun-dev/fun-cloud-api/pkg/auth"
 	"github.com/fun-dev/fun-cloud-api/internal/container/domain/container"
+	"github.com/fun-dev/fun-cloud-api/pkg/auth"
 )
 
 type (
 	// ContainerDeleteUsecase is Usecase
 	ContainerDeleteUsecase interface {
-		Execute(ctx context.Context, userID, containerID string) error
+		Execute(userID, containerID string) error
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerDeleteInteractor struct {
@@ -27,7 +26,7 @@ func NewContainerDeleteInteractor(cRepo container.Repository, aRepo auth.Reposit
 /* Execute is executing container delete usecase
 @param containerID: unique string like uuid
 */
-func (i ContainerDeleteInteractor) Execute(ctx context.Context, userID, containerID string) error {
+func (i ContainerDeleteInteractor) Execute(userID, containerID string) error {
 	// in this application, we use userID as kubernetes namespace.yaml
 	if err := i.cRepo.DeleteByContainerID(userID, containerID); err != nil {
 		return fmt.Errorf("call ContainerRepo.DeleteByContainerID: %w", err)

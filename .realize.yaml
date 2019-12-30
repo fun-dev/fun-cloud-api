@@ -20,8 +20,6 @@ schema:
       ignored_paths:
         - .git
         - .idea
-        - internal/auth
-        - cmd/auth
         - configs
         - scripts
         - deployments

@@ -24,9 +24,10 @@ services:
       - ../configs/container/dev.env
     ports:
       - 27017:27017
-#    volumes:
-#      - ./db:/data/db
-#      - ./configdb:/data/configdb
+    volumes:
+      - "mongodb-data:/data/db"
+      - "mongodb-configdb:/data/configdb"
+      - "./container/mongo:/container/mongo"
   container_mongo_express:
     container_name: "container_mongo_express"
     image: mongo-express
@@ -35,6 +36,8 @@ services:
       - 8081:8081
     env_file:
       - ../configs/container/dev.env
+    depends_on:
+      - container_mongo
   # ---
   auth:
     container_name: "auth"
@@ -70,4 +73,8 @@ services:
 
 volumes:
   redis-data:
+    driver: local
+  mongodb-data:
+    driver: local
+  mongodb-configdb:
     driver: local
