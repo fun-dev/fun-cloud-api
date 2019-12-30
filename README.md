@@ -31,6 +31,7 @@ FUN Cloud Platformで管理するKubernetes Clusterを操作するAPIです．
 ##### 開発用
 - 環境: コンテナ内に，k8sを構築し，APIはrealizeでHotReloadで開発できます．
 - コマンド: `make develop-container`
+- MongoExpressに接続し，containerというDBの中に，manifestというコレクションを作成して下さい．
 #### Auth
 ##### 開発用
 - コマンド: `make up-auth`
