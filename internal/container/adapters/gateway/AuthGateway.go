@@ -6,7 +6,7 @@ import (
 
 type AuthGateway struct{}
 
-func NewAuthGateway() auth.AuthRepository {
+func NewAuthGateway() auth.Repository {
 	return &AuthGateway{}
 }
 
