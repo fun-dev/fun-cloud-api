@@ -12,10 +12,10 @@ services:
       - container_mongo
       - container_mongo_express
     volumes:
-      - ../:/fun-cloud-api
+      - ..:/fun-cloud-api
     env_file:
       - ../configs/container/dev.env
-    command: '/bin/ash -c sleep 5 && sh ./build/container/dev_init.sh'
+    tty: true
   container_mongo:
     container_name: "container_mongo"
     image: mongo
@@ -24,9 +24,9 @@ services:
       - ../configs/container/dev.env
     ports:
       - 27017:27017
-    volumes:
-      - ./db:/data/db
-      - ./configdb:/data/configdb
+#    volumes:
+#      - ./db:/data/db
+#      - ./configdb:/data/configdb
   container_mongo_express:
     container_name: "container_mongo_express"
     image: mongo-express

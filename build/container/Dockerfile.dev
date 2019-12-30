@@ -1,5 +1,5 @@
 FROM docker:dind
-RUN apk --no-cache add curl wget git make musl-dev go
+RUN apk --no-cache add curl wget git make musl-dev go=1.13.4
 # --- setup kubernetes part ---
 RUN curl -sLo /usr/local/bin/kubectl 'https://storage.googleapis.com/kubernetes-release/release/v1.17.0/bin/linux/amd64/kubectl' && chmod +x /usr/local/bin/kubectl
 RUN curl -Lo /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.6.1/kind-$(uname)-amd64 && chmod +x /usr/local/bin/kind

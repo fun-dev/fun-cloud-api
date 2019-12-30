@@ -3,6 +3,28 @@ settings:
     force: false
     interval: 0s
 schema:
+  - name: container
+    path: .
+    commands:
+      install:
+        status: true
+        dir: cmd/container
+      run:
+        status: true
+        method: /go/bin/container
+    watcher:
+      extensions:
+        - go
+      paths:
+        - /
+      ignored_paths:
+        - .git
+        - .idea
+        - internal/auth
+        - cmd/auth
+        - configs
+        - scripts
+        - deployments
   - name: auth
     path: .
     commands:
@@ -20,7 +42,6 @@ schema:
       ignored_paths:
         - .git
         - .idea
-        - .realize
         - internal/container
         - cmd/container
         - configs
