@@ -49,6 +49,7 @@ func (u *User) Create(item User) error {
 	_, err := u.MySQLDriver.DB().NamedExec("INSERT INTO users (icon_url, google_name, access_token) VALUES (:icon_url, :google_name, :access_token)", &item)
 	if err != nil {
 		//TODO: implement error handling
+		return err
 	}
 	return nil
 }

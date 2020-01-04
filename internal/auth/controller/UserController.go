@@ -52,15 +52,18 @@ func (u UserController) POST(c *gin.Context) {
 	accessToken := c.GetHeader("Authorization")
 	if accessToken == term.NullString {
 		//TODO: implement error handling
+		c.JSON(http.StatusNoContent, gin.H{})
 	}
 	claim, err := u.Jwt.InspectGoogleIdToken(accessToken)
 	if err != nil {
 		//TODO: implement error handling
+		c.JSON(http.StatusBadRequest, gin.H{})
 		return
 	}
 	input := model.NewUser(claim.Picture, claim.Name, accessToken)
 	if err := u.User.Create(*input); err != nil {
 		//TODO: implement error handling
+		c.JSON(http.StatusBadRequest, gin.H{})
 		return
 	}
 	c.String(http.StatusCreated, "")
