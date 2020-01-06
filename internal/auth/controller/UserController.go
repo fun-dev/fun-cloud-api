@@ -1,22 +1,20 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/fun-dev/fun-cloud-api/internal/auth/model"
 	"github.com/fun-dev/fun-cloud-api/pkg/jwt"
 	"github.com/fun-dev/fun-cloud-api/pkg/term"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type (
 	UserController struct {
-		Name           string `db:"name",json:"name"`
-		GoogleUserName string `db:"google_name",json:"google_name"`
-		AccessToken    string `db:"access_token",json:"access_token"`
-		IconURL        string `db:"icon_url",json:"icon_url"`
-
+		// for connecting user store
 		User model.IUser
-		Jwt  jwt.IJwt
+		// validate user access token
+		Jwt jwt.IJwt
 	}
 
 	IUserController interface {
