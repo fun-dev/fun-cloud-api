@@ -13,6 +13,8 @@ var (
 )
 
 type IContainerController interface {
+	Get(c *gin.Context)
+	Post(c *gin.Context)
 	Delete(c *gin.Context)
 }
 
@@ -21,9 +23,10 @@ type GinDriver struct {
 	Router        *gin.Engine
 }
 
-func NewGinDriver() *GinDriver {
+func NewGinDriver(ctrl IContainerController) *GinDriver {
 	result := &GinDriver{}
 	result.Router = _router
+	result.ContainerCtrl = ctrl
 	if err := result.setupRouting(); err != nil {
 		log.Fatal(err)
 	}
@@ -38,9 +41,9 @@ func (d *GinDriver) setupRouting() error {
 	// --- Client should add /v1 at first on url
 	v1 := d.Router.Group("/v1")
 	// --- REST ENDPOINT --- //
-	v1.GET("/containers")
-	v1.POST("/containers")
-	v1.DELETE("/containers/:id", d.ContainerCtrl.Delete)
+	v1.GET("/containers", d.ContainerCtrl.Get)
+	v1.POST("/containers", d.ContainerCtrl.Post)
+	v1.DELETE("/containers/:container_id", d.ContainerCtrl.Delete)
 	return nil
 }
 

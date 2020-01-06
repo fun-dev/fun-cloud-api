@@ -1,11 +1,15 @@
-FROM golang:1.13.4-alpine
-# --- download kubectl binary ---
-WORKDIR /tmp
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.15.0/bin/linux/amd64/kubectl && \
-        chmod +x ./kubectl
+FROM docker:dind
+RUN apk --no-cache add curl wget git make musl-dev go=1.13.4-r1
+# --- setup kubernetes part ---
+RUN curl -sLo /usr/local/bin/kubectl 'https://storage.googleapis.com/kubernetes-release/release/v1.17.0/bin/linux/amd64/kubectl' && chmod +x /usr/local/bin/kubectl
+RUN curl -Lo /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.6.1/kind-$(uname)-amd64 && chmod +x /usr/local/bin/kind
+# Configure Go
+ENV GOROOT /usr/lib/go
+ENV GOPATH /go
+ENV PATH /go/bin:$PATH
+# --- container service part
 WORKDIR /fun-cloud-api
 COPY . .
-# --- download realize (hot reload) ---
-RUN apk add --no-cache git && go get gopkg.in/urfave/cli.v2@master && go get github.com/oxequa/realize
+# --- download realize (hot reload) part ---
+RUN go get gopkg.in/urfave/cli.v2@master && go get github.com/oxequa/realize
 EXPOSE 3000
-CMD ["realize", "start"," --name='container'"," --run"]

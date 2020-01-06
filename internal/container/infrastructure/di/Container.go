@@ -1,29 +1,24 @@
 package di
 
 import (
-	"github.com/fun-dev/ccms/internal/container/adapters/controller"
-	"github.com/fun-dev/ccms/internal/container/adapters/gateway"
-	"github.com/fun-dev/ccms/internal/container/application/usecase"
-	provider2 "github.com/fun-dev/ccms/internal/container/infrastructure/provider"
-	driver2 "github.com/fun-dev/ccms/internal/container/infrastructure/server"
-	"github.com/fun-dev/ccms/pkg/redis"
+	"github.com/fun-dev/fun-cloud-api/internal/container/adapters/controller"
+	"github.com/fun-dev/fun-cloud-api/internal/container/adapters/gateway"
+	"github.com/fun-dev/fun-cloud-api/internal/container/application/usecase"
+	"github.com/fun-dev/fun-cloud-api/internal/container/infrastructure/server"
+	"github.com/fun-dev/fun-cloud-api/pkg/kubernetes"
+	"github.com/fun-dev/fun-cloud-api/pkg/redis"
 	"go.uber.org/dig"
 )
 
 func NewContainer() (*dig.Container, error) {
 	c := dig.New()
-	// --- Kubectl Driver --- //
-	err := c.Provide(driver2.NewKubectlDriver)
-	if err != nil {
-		return nil, err
-	}
 	// --- Redis Driver --- //
-	err = c.Provide(redis.NewRedisDriver)
+	err := c.Provide(redis.NewRedisDriver)
 	if err != nil {
 		return nil, err
 	}
 	// --- Kubernetes Provider --- //
-	err = c.Provide(provider2.NewKubernetesProvider)
+	err = c.Provide(kubernetes.NewKubernetesProvider)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +43,7 @@ func NewContainer() (*dig.Container, error) {
 		return nil, err
 	}
 	// --- Server Driver --- //
-	err = c.Provide(driver2.NewGinDriver)
+	err = c.Provide(server.NewGinDriver)
 	if err != nil {
 		return nil, err
 	}

@@ -5,54 +5,37 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fun-dev/fun-cloud-api/internal/container/domain/container"
-	"github.com/fun-dev/fun-cloud-api/internal/container/infrastructure/apperror/repoerr"
 	"github.com/fun-dev/fun-cloud-api/pkg/kubernetes"
-	"github.com/fun-dev/fun-cloud-api/pkg/kubernetes/kubectl"
 	"github.com/fun-dev/fun-cloud-api/pkg/logging"
-	"github.com/fun-dev/fun-cloud-api/pkg/redis"
+	"github.com/fun-dev/fun-cloud-api/pkg/mongo"
 	"github.com/fun-dev/fun-cloud-api/pkg/term"
-	apps "k8s.io/api/apps/v1"
+	"github.com/fun-dev/fun-cloud-api/pkg/uuid"
+	"go.mongodb.org/mongo-driver/bson"
 	core "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"log"
+	"time"
+)
+
+var (
+	_collectionName = "manifest"
 )
 
 // ContainerGateway is
 type ContainerGateway struct {
 	K8SProvider kubernetes.IK8SProvider
-	Redis       redis.Driver
+	Mongo mongo.IMongoDriver
 }
 
-// NewContainerGateway is
-func NewContainerGateway(k kubernetes.IK8SProvider, r redis.Driver) container.Repository {
+func NewContainerGateway(k kubernetes.IK8SProvider, m mongo.IMongoDriver) container.Repository {
 	return &ContainerGateway{
 		k,
-		r,
+		m,
 	}
 }
 
-// DeleteByContainerID is
-func (g ContainerGateway) DeleteByContainerID(ctx context.Context, id string, namespace string) error {
-	deploymentManifest, err := g.GetDeploymentManifestByContainerID(ctx, id)
-	if err != nil {
-		return fmt.Errorf("call ContainerGateway.GetDeploymentManifestByContainerID: %w", err)
-	}
-	logging.Logf("[debug] deployment manifest (%s) on ContainerGateway.DeleteByContainerID()\n", deploymentManifest)
-	return g.K8SProvider.Kubectl().Execute(kubectl.Delete, deploymentManifest, namespace)
-}
-
-func (g ContainerGateway) GetDeploymentManifestByContainerID(ctx context.Context, id string) (manifest string, err error) {
-	key := "deployment_" + id
-	// TODO: adapt getter
-	manifest = g.Redis.Client.Get(key).String()
-	if manifest == term.NullString {
-		return "", repoerr.DeploymentManifestCanNotBeFound
-	}
-	logging.Logf("info: ContainerGateway.GetDeploymentManifestByContainerID result is ", manifest)
-	return
-}
-
-func (g ContainerGateway) GetAllByUserID(ctx context.Context, id, namespace string) ([]*container.Container, error) {
-	deploymentList, err := g.K8SProvider.Client().AppsV1().Deployments(namespace).List(v1.ListOptions{})
+func (g ContainerGateway) GetAllByUserID(userID string) ([]*container.Container, error) {
+	deploymentList, err := g.K8SProvider.Client().AppsV1().Deployments(userID).List(v1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -73,26 +56,79 @@ func (g ContainerGateway) GetAllByUserID(ctx context.Context, id, namespace stri
 	return resultContainers, nil
 }
 
-func (g ContainerGateway) Create(ctx context.Context, id, imageName, namespace string) (manifest string, err error) {
-	object, _ := g.K8SProvider.Kubectl().DeserializeYamlToObject(kubectl.UseDeploymentManifest, &apps.Deployment{})
-	deployment := object.(*apps.Deployment)
-	podContainer := core.Container{
-		Name:  id,
-		Image: imageName,
+func (g ContainerGateway) Create(userID, imageName string) (containerID string, manifest string, err error) {
+	//TODO: implements imageName Validation
+	//TODO: update deployment manifest on store or create new deployment
+	ns, _ := g.K8SProvider.Client().CoreV1().Namespaces().Get(userID, v1.GetOptions{})
+	log.Printf("info: namespace is %v\n", ns.ObjectMeta.Name)
+	if ns.ObjectMeta.Name == term.NullString {
+		log.Printf("info: namespace is not found, next create namespace\n")
+		_, err = g.K8SProvider.Client().CoreV1().Namespaces().Create(&core.Namespace{
+			TypeMeta:   v1.TypeMeta{},
+			ObjectMeta: v1.ObjectMeta{
+				Name: userID,
+			},
+			Spec:       core.NamespaceSpec{},
+			Status:     core.NamespaceStatus{},
+		})
+		if err != nil {
+			return term.NullString, term.NullString, err
+		}
 	}
-	deployment.Spec.Template.Spec.Containers[0] = podContainer
-	manifest, _ = g.K8SProvider.Kubectl().DecodeObjectToYaml(deployment)
-	err = g.K8SProvider.Kubectl().Execute(kubectl.Apply, manifest, namespace)
-	if err != nil {
-		return
+	// create deployment manifest for user
+	containerID = uuid.NewUUID()
+	object, _ := g.K8SProvider.Manifest().NewDeploymentObject()
+	object.Name = containerID
+	object.Namespace = userID
+	object.Spec.Template.Spec.Containers = []core.Container{{Name: containerID, Image: imageName}}
+	manifest, _ = g.K8SProvider.Manifest().TransformObjectToYaml(object)
+	_, ok := g.K8SProvider.Kubectl().Apply(manifest)
+	if !ok {
+		return term.NullString, term.NullString, fmt.Errorf("")
 	}
 	return
 }
 
-func (g ContainerGateway) SaveDeploymentManifestByContainerID(ctx context.Context, containerID, yaml string) error {
-	key := "deployment_" + "id"
-	err := g.Redis.Client.Append(key, yaml).Err()
+func (g ContainerGateway) DeleteByContainerID(userID, containerID string) error {
+	//TODO: user is exist
+	deploymentManifest, err := g.GetDeploymentManifestByContainerID(containerID)
 	if err != nil {
+		return fmt.Errorf("call ContainerGateway.GetDeploymentManifestByContainerID: %w", err)
+	}
+	logging.Logf("[debug] deployment manifest (%s) on ContainerGateway.DeleteByContainerID()\n", deploymentManifest)
+	result, ok := g.K8SProvider.Kubectl().Delete(deploymentManifest)
+	if !ok {
+		logging.Logf("info: kubectl apply result %v\n", result)
+		return fmt.Errorf("call ContainerGateway.DeleteByContainerID: %w", err)
+	}
+	return nil
+}
+
+func (g ContainerGateway) GetDeploymentManifestByContainerID(containerID string) (manifest string, err error) {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	var doc bson.M
+	if err = g.Mongo.DB().Collection(_collectionName).FindOne(ctx, bson.M{"container_id": containerID}).Decode(&doc); err != nil {
+		return term.NullString, err
+	}
+	return doc["manifest"].(string), nil
+}
+
+func (g ContainerGateway) SaveDeploymentManifestByContainerID(containerID, manifest string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	if _, err := g.Mongo.DB().Collection(_collectionName).InsertOne(ctx, bson.M{
+		"container_id": containerID,
+		"manifest": manifest,
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (g ContainerGateway) DeleteDeploymentManifestByContainerID(containerID string) error {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	if _, err := g.Mongo.DB().Collection(_collectionName).DeleteOne(ctx, bson.M{
+		"container_id": containerID,
+	}); err != nil {
 		return err
 	}
 	return nil

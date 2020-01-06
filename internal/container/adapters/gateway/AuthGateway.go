@@ -1,12 +1,12 @@
 package gateway
 
 import (
-	"github.com/fun-dev/fun-cloud-api/internal/container/domain/auth"
+	"github.com/fun-dev/fun-cloud-api/pkg/auth"
 )
 
 type AuthGateway struct{}
 
-func NewAuthGateway() auth.AuthRepository {
+func NewAuthGateway() auth.Repository {
 	return &AuthGateway{}
 }
 
