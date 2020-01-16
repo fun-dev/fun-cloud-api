@@ -26,7 +26,7 @@ type (
 )
 
 func NewContainerReadInteractor(cRepo container.Repository, aRepo auth.Repository) ContainerReadUsecase {
-	return &ContainerReadInteractor{cRepo:cRepo,aRepo:aRepo}
+	return &ContainerReadInteractor{cRepo: cRepo, aRepo: aRepo}
 }
 
 /*

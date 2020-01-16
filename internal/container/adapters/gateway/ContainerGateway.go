@@ -24,7 +24,7 @@ var (
 // ContainerGateway is
 type ContainerGateway struct {
 	K8SProvider kubernetes.IK8SProvider
-	Mongo mongo.IMongoDriver
+	Mongo       mongo.IMongoDriver
 }
 
 func NewContainerGateway(k kubernetes.IK8SProvider, m mongo.IMongoDriver) container.Repository {
@@ -64,12 +64,12 @@ func (g ContainerGateway) Create(userID, imageName string) (containerID string, 
 	if ns.ObjectMeta.Name == term.NullString {
 		log.Printf("info: namespace is not found, next create namespace\n")
 		_, err = g.K8SProvider.Client().CoreV1().Namespaces().Create(&core.Namespace{
-			TypeMeta:   v1.TypeMeta{},
+			TypeMeta: v1.TypeMeta{},
 			ObjectMeta: v1.ObjectMeta{
 				Name: userID,
 			},
-			Spec:       core.NamespaceSpec{},
-			Status:     core.NamespaceStatus{},
+			Spec:   core.NamespaceSpec{},
+			Status: core.NamespaceStatus{},
 		})
 		if err != nil {
 			return term.NullString, term.NullString, err
@@ -117,7 +117,7 @@ func (g ContainerGateway) SaveDeploymentManifestByContainerID(containerID, manif
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	if _, err := g.Mongo.DB().Collection(_collectionName).InsertOne(ctx, bson.M{
 		"container_id": containerID,
-		"manifest": manifest,
+		"manifest":     manifest,
 	}); err != nil {
 		return err
 	}

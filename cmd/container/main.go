@@ -15,7 +15,7 @@ var (
 	_mongoDriver   = mongo.NewMongoDriver()
 	_containerRepo = gateway.NewContainerGateway(_k8sProvider, _mongoDriver)
 	_authRepo      = gateway.NewAuthGateway()
-	_read          = usecase.NewContainerReadInteractor(_containerRepo,_authRepo)
+	_read          = usecase.NewContainerReadInteractor(_containerRepo, _authRepo)
 	_create        = usecase.NewContainerCreateInteractor(_containerRepo, _authRepo)
 	_delete        = usecase.NewContainerDeleteInteractor(_containerRepo, _authRepo)
 	_ctrl          = controller.NewContainerController(_read, _create, _delete)

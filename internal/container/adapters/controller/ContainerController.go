@@ -23,7 +23,7 @@ type (
 	}
 )
 
-func NewContainerController(cRed usecase.ContainerReadUsecase,cCre usecase.ContainerCreateUsecase, cDel usecase.ContainerDeleteUsecase) server.IContainerController {
+func NewContainerController(cRed usecase.ContainerReadUsecase, cCre usecase.ContainerCreateUsecase, cDel usecase.ContainerDeleteUsecase) server.IContainerController {
 	return &ContainerController{
 		cRed,
 		cCre,
@@ -47,6 +47,7 @@ func (cc ContainerController) Get(c *gin.Context) {
 	c.JSON(http.StatusOK, resp.Entry.Containers)
 	return
 }
+
 // Post is
 // Header: key is Authorization
 // BODY: {"image_name": "nginx:latest"}

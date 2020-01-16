@@ -9,7 +9,7 @@ import (
 
 type (
 	AuthController struct {
-		Jwt  jwt.IJwt
+		Jwt jwt.IJwt
 	}
 
 	IAuthController interface {
@@ -24,14 +24,14 @@ func NewAuthController() IAuthController {
 func (ac AuthController) TokenValidate(c *gin.Context) {
 	accessToken := c.GetHeader("Authorization")
 	if accessToken == term.NullString {
-		c.JSON(http.StatusBadRequest, gin.H{"message":"please set access token on the header"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "please set access token on the header"})
 		return
 	}
 	_, err := ac.Jwt.InspectGoogleIdToken(accessToken)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message":"your access token is invalid"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "your access token is invalid"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message":"your access token is valid"})
+	c.JSON(http.StatusOK, gin.H{"message": "your access token is valid"})
 	return
 }

@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type AuthMockController struct {}
+type AuthMockController struct{}
 
 func NewAuthMockController() IAuthController {
 	return &AuthMockController{}
@@ -15,9 +15,9 @@ func NewAuthMockController() IAuthController {
 func (am AuthMockController) TokenValidate(c *gin.Context) {
 	accessToken := c.GetHeader("Authorization")
 	if accessToken == term.NullString {
-		c.JSON(http.StatusBadRequest, gin.H{"message":"please set access token on the header"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "please set access token on the header"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message":"your access token is valid"})
+	c.JSON(http.StatusOK, gin.H{"message": "your access token is valid"})
 	return
 }

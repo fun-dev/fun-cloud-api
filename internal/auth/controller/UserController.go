@@ -11,10 +11,8 @@ import (
 
 type (
 	UserController struct {
-		// for connecting user store
 		User model.IUser
-		// validate user access token
-		Jwt jwt.IJwt
+		Jwt  jwt.IJwt
 	}
 
 	IUserController interface {
@@ -30,16 +28,16 @@ func NewUserController(user model.IUser) IUserController {
 func (u UserController) GET(c *gin.Context) {
 	accessToken := c.GetHeader("Authorization")
 	if accessToken == "" {
-		c.JSON(http.StatusBadRequest, gin.H{})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "accessToken is nil"})
 		return
 	}
 	user, err := u.User.GetByAccessToken(accessToken)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Not match correct accessToken"})
 		return
 	}
 	if user != nil {
-		c.JSON(http.StatusNoContent, gin.H{})
+		c.JSON(http.StatusNoContent, gin.H{"message": "There are no users"})
 		return
 	}
 	c.JSON(http.StatusOK, user)
@@ -49,17 +47,20 @@ func (u UserController) GET(c *gin.Context) {
 func (u UserController) POST(c *gin.Context) {
 	accessToken := c.GetHeader("Authorization")
 	if accessToken == term.NullString {
-		//TODO: implement error handling
+		// ex error message: please set value on authorization header
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Please set value on authorization header"})
+		return
 	}
 	claim, err := u.Jwt.InspectGoogleIdToken(accessToken)
 	if err != nil {
-		//TODO: implement error handling
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Your acccess token is invalid"})
 		return
 	}
 	input := model.NewUser(claim.Picture, claim.Name, accessToken)
 	if err := u.User.Create(*input); err != nil {
-		//TODO: implement error handling
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to create new user"})
 		return
 	}
 	c.String(http.StatusCreated, "")
+	return
 }
