@@ -16,3 +16,18 @@ about: Report a problem or question
 - hoge
 - huga
 - foo
+
+---
+
+**Describe your question. **
+Explain what you don't know and want to know.
+
+**Explain your understanding **
+How much do you understand so far, and describe your knowledge which may be related to what you want to know.
+
+**Relation**
+Describe related articles, issues, and repositories if any.
+(Note: You can get the Issue URL from Copy link)
+- hoge
+- huga
+- foo

@@ -12,7 +12,7 @@ about: Suggest an idea for this project
 機能追加に必要な手法、考えていることを書く.  
 
 **他に検討した手段**
-他に検討した挙動や機能についての明確かつ簡潔な説明.  
+他に検討した挙動や機能についての明確かつ簡潔な説明する.  
 
 **関連**
 関連するIssueやリポジトリがあれば記述する. 
@@ -23,3 +23,26 @@ about: Suggest an idea for this project
 
 **その他の条件**
 機能について、その他のコンテキストやスクリーンショットなどがあれば、ここに追加.  
+
+---
+
+**Explanation of desired function**
+Describe what features you want.
+If  similar functions are exist, explain the problems and improvements of the current function.
+
+**Development method**
+For adding functions, write the methods and ideas you need.
+
+**Other considered method**
+Explain other behaviors or features which you considered with short and sweet description.
+
+**Relation**
+Describe any related issues or repositories if any.
+(Note: You can get the Issue URL from Copy link)
+
+- hoge
+- huga
+- foo
+
+**Other conditions**
+Add here if you have additional context or screenshots for the feature
