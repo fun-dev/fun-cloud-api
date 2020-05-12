@@ -1,0 +1,87 @@
+@startuml
+
+package adapters {
+    package controller {
+        /' --- implements on RPC --- '/
+        class ClusterManager {
+            CreateContainer()
+            GetContainers()
+            UpdateContainer()
+            DeleteContainer()
+        }
+    }
+    package gateway {
+        class ContainerGatewayOnRDB {
+            Insert(): error
+            SelectByUserID(): ([]Container,error)
+            Update(): error
+            Delete(): error
+        }
+        class ContainerManifestGatewayOnDocument {
+            Insert(): error
+            Find(): ([]ContainerManifest,error)
+            Update(): error
+            Delete(): error
+        }
+        class AuthGatewayOnHTTP {
+            Get(): (UserInfo, error)
+            Post(): error
+        }
+    }
+}
+
+package application {
+    package usecase {
+        /' --- interface --- '/
+        interface ContainerCreateUsecase {
+            Execute()
+        }
+        interface ContainerReadUsecase {
+            Execute()
+        }
+        interface ContainerDeleteUsecase {
+            Execute()
+        }
+        /' --- instance --- '/
+        class ContainerCreateInteractor {
+            NewContainerCreateInteractor(): ContainerCreateUsecase
+        }
+        class ContainerReadInteractor {
+            NewContainerReadInteractor(): ContainerReadUsecase
+        }
+        class ContainerDeleteInteractor {
+            NewContainerDeleteInteractor(): ContainerDeleteUsecase
+        }
+    }
+}
+
+package domain {
+    package container {
+        /'Value Object'/
+        class Container {
+            /' --- field --- '/
+            ID: ContainerID
+            ImageName: ImageName
+            URL: ContainerURL
+            Condition: ContainerCondition
+            /' --- func --- '/
+            NewContainer() (*Container, error)
+        }
+        class ContainerID {}
+        class ImageName {}
+        /'ex) harbor.${MY_DOMAIN}/my_rbac_test_project/kuard-amd64:blue'/
+        class ContainerURL {}
+        class ContainerCondition {}
+        /'ex) True, False, Unknown'/
+
+        class ContainerManifest {
+            /' --- field --- '/
+            ContainerID: ContainerID
+            ManifestStr: ManifestStr
+            /' --- func --- '/
+            NewContainerManifest() (*ContainerManifest, error)
+        }
+        class ManifestStr {}
+    }
+}
+@enduml
