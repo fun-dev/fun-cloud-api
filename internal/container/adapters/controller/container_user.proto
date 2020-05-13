@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "github.com/fun-dev/fun-cloud-api/internal/container/adapters/controller";
+package controller;
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+service ContainerUser {
+    rpc CreateContainer(google.protobuf.Empty) returns (google.protobuf.Empty) {
+        option (google.api.http) = { get: "/v1/shelves/{shelf}" };
+    }
+    rpc GetContainer(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+    rpc DeleteContainer(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+}
+

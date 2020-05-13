@@ -3,7 +3,7 @@
 package adapters {
     package controller {
         /' --- implements on RPC --- '/
-        class ClusterManager {
+        class ContainerUser {
             CreateContainer()
             GetContainers()
             UpdateContainer()
@@ -38,7 +38,7 @@ package application {
     package usecase {
         /' --- interface --- '/
         interface ContainerCreateUsecase {
-            Execute()
+            Execute(): error
         }
         interface ContainerReadUsecase {
             Execute()
@@ -59,20 +59,22 @@ package application {
     }
 }
 
+
+
 package domain {
     package model {
         /'Value Object'/
         class Container {
             /' --- field --- '/
             ID: ContainerID
-            ImageName: ImageName
+            ImageName: ContainerImageName
             URL: ContainerURL
             Condition: ContainerCondition
             /' --- func --- '/
             NewContainer() (*Container, error)
         }
         class ContainerID {}
-        class ImageName {}
+        class ContainerImageName {}
         /'ex) harbor.${MY_DOMAIN}/my_rbac_test_project/kuard-amd64:blue'/
         class ContainerURL {}
         class ContainerCondition {}
@@ -97,6 +99,34 @@ package domain {
     }
 }
 
-ContainerRepository <|.. ContainerGatewayOnRDB
-KubernetesRepository <|.. KubernetesGatewayOnHTTP
+/' controller ..> usecase '/
+ContainerUser ..> ContainerCreateUsecase
+ContainerUser ..> ContainerReadUsecase
+ContainerUser ..> ContainerDeleteUsecase
+
+/'usecase ..> gateway '/
+ContainerCreateInteractor ..> ContainerRepository
+ContainerReadInteractor ..> ContainerRepository
+ContainerDeleteInteractor ..> ContainerRepository
+/'implements'/
+ContainerCreateInteractor ..|> ContainerCreateUsecase
+ContainerReadInteractor ..|> ContainerReadUsecase
+ContainerDeleteInteractor ..|> ContainerDeleteUsecase
+
+/' gateway ..> repository '/
+
+/'implements'/
+AuthGatewayOnHTTP ..|> AuthRepository
+ContainerGatewayOnRDB ..|> ContainerRepository
+ContainerManifestGatewayOnDocument ..|> ContainerManifestRepository
+KubernetesGatewayOnHTTP ..|> KubernetesRepository
+
+/' domain model '/
+Container *-- ContainerID
+Container *-- ContainerImageName
+Container *-- ContainerURL
+Container *-- ContainerCondition
+
+ContainerManifest *-- ContainerID
+ContainerManifest *-- ManifestStr
 @enduml
