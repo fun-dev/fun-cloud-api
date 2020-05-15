@@ -10,11 +10,11 @@ require (
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/mock v1.3.1
-	github.com/golang/protobuf v1.4.1 // indirect
+	github.com/golang/protobuf v1.4.2
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/googleapis/gnostic v0.3.1 // indirect
-	github.com/grpc-ecosystem/grpc-gateway v1.14.5 // indirect
+	github.com/grpc-ecosystem/grpc-gateway v1.14.5
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
@@ -28,8 +28,9 @@ require (
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553 // indirect
 	golang.org/x/sys v0.0.0-20191228213918-04cbcbbfeed8 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
-	google.golang.org/genproto v0.0.0-20200511104702-f5ebc3bea380 // indirect
-	google.golang.org/grpc v1.29.1 // indirect
+	google.golang.org/genproto v0.0.0-20200514193133-8feb7f20f2a2
+	google.golang.org/grpc v1.29.1
+	google.golang.org/protobuf v1.23.0
 	gopkg.in/go-playground/validator.v9 v9.31.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	k8s.io/api v0.17.0

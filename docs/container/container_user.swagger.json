@@ -1,0 +1,211 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "container_user.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/users/{user_id}/container/create": {
+      "post": {
+        "operationId": "ContainerUser_CreateContainer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/controllerCreateContainerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ContainerUser"
+        ]
+      }
+    },
+    "/v1/users/{user_id}/container/list": {
+      "get": {
+        "operationId": "ContainerUser_ListContainer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/controllerListContainerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "container_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ContainerUser"
+        ]
+      }
+    },
+    "/v1/users/{user_id}/containers/{container_id}/delete": {
+      "delete": {
+        "summary": "rpc UpdateContainer(google.protobuf.Empty) returns (google.protobuf.Empty) {}",
+        "operationId": "ContainerUser_DeleteContainer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "container_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ContainerUser"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "controllerContainer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "image_name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "#/definitions/controllerContainerCondition"
+        }
+      }
+    },
+    "controllerContainerCondition": {
+      "type": "string",
+      "enum": [
+        "TRUE",
+        "FALSE",
+        "UNKNOWN"
+      ],
+      "default": "TRUE",
+      "title": "--- Common Object --- //"
+    },
+    "controllerCreateContainerRequest": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        },
+        "container_image_name": {
+          "type": "string"
+        }
+      },
+      "title": "--- /v1/users/{user_id}/container/create ---"
+    },
+    "controllerListContainerResponse": {
+      "type": "object",
+      "properties": {
+        "containers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/controllerContainer"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
