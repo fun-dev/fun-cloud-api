@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option go_package = "controller";
+package controller;
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+service ContainerUser {
+    rpc CreateContainer(CreateContainerRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = { 
+            post: "/v1/users/{user_id}/container/create" 
+            body: "*"
+        };
+    }
+    rpc ListContainer(ListContainerRequest) returns (ListContainerResponse) {
+        option (google.api.http) = { 
+            get: "/v1/users/{user_id}/container/list"
+        };
+    }
+    //rpc UpdateContainer(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+    rpc DeleteContainer(DeleteContainerRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = { 
+            delete: "/v1/users/{user_id}/containers/{container_id}/delete"
+        };
+    }
+}
+// --- Common Object --- //
+enum ContainerCondition {
+    TRUE    = 0;
+    FALSE   = 1;
+    UNKNOWN = 2;
+}
+message Container {
+    string id                     = 1;
+    string image_name             = 2;
+    string url                    = 3;
+    ContainerCondition condition  = 4;
+}
+// --- /v1/users/{user_id}/container/create ---
+message CreateContainerRequest {
+    string user_id              = 1;
+    string container_image_name = 2;
+}
+// --- "/v1/users/{user_id}/container/list ---
+message ListContainerRequest {
+    string user_id      = 1;
+    string container_id = 2;
+}
+message ListContainerResponse {
+    repeated Container containers = 1;
+}
+// --- /v1/users/{user_id}/container/create ---
+message DeleteContainerRequest {
+    string user_id      = 1;
+    string container_id = 2;
+}
