@@ -1,13 +1,13 @@
 package model
 
 import (
-	"github.com/fun-dev/fun-cloud-api/pkg/mysql"
+	"github.com/fun-dev/fun-cloud-api/pkg/cloudstore"
 	"log"
 	"testing"
 )
 
 func TestUser_GetByAccessToken(t *testing.T) {
-	driver, _ := mysql.NewMysqlDriver()
+	driver, _ := cloudstore.NewMysqlDriver()
 	user := NewUserWithMySQLDriver(driver)
 	// TODO: prepare test data
 	// 1. deploy mysql on docker-compose

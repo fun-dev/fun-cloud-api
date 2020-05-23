@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: favorite-name
+  name: longhorn-volv-pvc
 spec:
-  storageClassName: favotite-name
   accessModes:
-    - ReadWriteOnce # Can't connect multiple node at the same time
+    - ReadWriteOnce
+  storageClassName: longhorn
   resources:
     requests:
-      storage: 3Gi
+      storage: 2Gi

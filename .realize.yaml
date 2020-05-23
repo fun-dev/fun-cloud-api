@@ -23,15 +23,15 @@ schema:
         - configs
         - scripts
         - deployments
-  - name: auth
+  - name: cloudauth
     path: .
     commands:
       install:
         status: true
-        dir: cmd/auth
+        dir: cmd/cloudauth
       run:
         status: true
-        method: /go/bin/auth
+        method: /go/bin/cloudauth
     watcher:
       extensions:
         - go

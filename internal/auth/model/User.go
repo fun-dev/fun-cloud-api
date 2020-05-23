@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/fun-dev/fun-cloud-api/pkg/mysql"
+	"github.com/fun-dev/fun-cloud-api/pkg/cloudstore"
 )
 
 type (
@@ -16,12 +16,12 @@ type (
 		GoogleName  string `json:"google_name" db:"google_name"`
 		AccessToken string `json:"-" db:"access_token, primarykey"`
 		// --- other struct ---
-		MySQLDriver mysql.IMySQLXDriver
+		MySQLDriver cloudstore.IMySQLXDriver
 	}
 )
 
 // Constructor with DB Connection
-func NewUserWithMySQLDriver(mysqlDriver mysql.IMySQLXDriver) IUser {
+func NewUserWithMySQLDriver(mysqlDriver cloudstore.IMySQLXDriver) IUser {
 	result := &User{}
 	result.MySQLDriver = mysqlDriver
 	return result

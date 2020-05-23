@@ -1,18 +1,18 @@
 package controller
 
 import (
+	"github.com/fun-dev/fun-cloud-api/pkg/cloudauth"
+	"github.com/fun-dev/fun-cloud-api/pkg/cloudutil"
 	"net/http"
 
 	"github.com/fun-dev/fun-cloud-api/internal/auth/model"
-	"github.com/fun-dev/fun-cloud-api/pkg/jwt"
-	"github.com/fun-dev/fun-cloud-api/pkg/term"
 	"github.com/gin-gonic/gin"
 )
 
 type (
 	UserController struct {
 		User model.IUser
-		Jwt  jwt.IJwt
+		Jwt  cloudauth.IJwt
 	}
 
 	IUserController interface {
@@ -46,7 +46,7 @@ func (u UserController) GET(c *gin.Context) {
 
 func (u UserController) POST(c *gin.Context) {
 	accessToken := c.GetHeader("Authorization")
-	if accessToken == term.NullString {
+	if accessToken == cloudutil.NullString {
 		// ex error message: please set value on authorization header
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Please set value on authorization header"})
 		return

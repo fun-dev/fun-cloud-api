@@ -40,7 +40,7 @@ services:
       - container_mongo
   # ---
   auth:
-    container_name: "auth"
+    container_name: "cloudauth"
     build:
       context: ../
       dockerfile: ./build/auth/Dockerfile.dev
@@ -53,13 +53,13 @@ services:
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: auth
+      MYSQL_DATABASE: cloudauth
       MYSQL_USER: docker
       MYSQL_PASSWORD: docker
       TZ: 'Asia/Tokyo'
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - ./auth/mysql/sql:/docker-entrypoint-initdb.d
+      - ./cloudauth/mysql/sql:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
   redis:
