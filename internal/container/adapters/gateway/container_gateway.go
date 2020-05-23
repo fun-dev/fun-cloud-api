@@ -1,134 +1,154 @@
 package gateway
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"github.com/fun-dev/fun-cloud-api/internal/container/domain/models"
 	"github.com/fun-dev/fun-cloud-api/internal/container/domain/repository"
 	"github.com/fun-dev/fun-cloud-api/pkg/cloudk8s"
-	"github.com/fun-dev/fun-cloud-api/pkg/cloudstore"
 	"github.com/fun-dev/fun-cloud-api/pkg/cloudutil"
-	"go.mongodb.org/mongo-driver/bson"
-	core "k8s.io/api/core/v1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"log"
-	"time"
-)
-
-var (
-	_collectionName = "manifest"
+	"github.com/fun-dev/fun-cloud-protobuf/container/rpc"
+	v1 "k8s.io/api/core/v1"
+	"os"
 )
 
 // ContainerGateway is
-type ContainerGateway struct {
-	K8SProvider cloudk8s.IK8SProvider
-	Mongo       cloudstore.IMongoDriver
-}
+type ContainerGateway struct {}
 
-func NewContainerGateway(k cloudk8s.IK8SProvider, m cloudstore.IMongoDriver) repository.Repository {
-	return &ContainerGateway{
-		k,
-		m,
-	}
-}
-
-func (g ContainerGateway) GetAllByUserID(userID string) ([]*models.Container, error) {
-	deploymentList, err := g.K8SProvider.Client().AppsV1().Deployments(userID).List(v1.ListOptions{})
+func (c ContainerGateway) GetAllByUserID(userID, namespace string) ([]*rpc.Container, error) {
+	pods, err := cloudk8s.GetPodsOnKubeAPIClient(userID)
 	if err != nil {
 		return nil, err
 	}
-	if len(deploymentList.Items) == cloudutil.HasNoItem {
-		return nil, errors.New("error: you don't have any containers")
-	}
-	resultContainers := make([]*models.Container, len(deploymentList.Items))
-	for i, d := range deploymentList.Items {
-		podContainer := d.Spec.Template.Spec.Containers[0]
-		resultContainer := &models.Container{
-			UID:         podContainer.Name,
-			ImageName:   podContainer.Image,
-			ConnectInfo: d.SelfLink, // TODO: fix deprecated
-			Status:      d.Status.String(),
+	var result []*rpc.Container
+	for _, pod  := range pods.Items {
+		container := rpc.Container{
+			Id:        pod.Name,
+			ImageName: pod.Spec.Containers[0].Image,
+			Url:       pod.GetSelfLink(),
+			Condition: _judgePodCondition(pod.Status.Conditions[0].Status),
 		}
-		resultContainers[i] = resultContainer
+		result = append(result, &container)
 	}
-	return resultContainers, nil
+	return result, nil
 }
 
-func (g ContainerGateway) Create(userID, imageName string) (containerID string, manifest string, err error) {
-	//TODO: implements imageName Validation
-	//TODO: update deployment manifest on store or create new deployment
-	ns, _ := g.K8SProvider.Client().CoreV1().Namespaces().Get(userID, v1.GetOptions{})
-	log.Printf("info: namespace is %v\n", ns.ObjectMeta.Name)
-	if ns.ObjectMeta.Name == cloudutil.NullString {
-		log.Printf("info: namespace is not found, next create namespace\n")
-		_, err = g.K8SProvider.Client().CoreV1().Namespaces().Create(&core.Namespace{
-			TypeMeta: v1.TypeMeta{},
-			ObjectMeta: v1.ObjectMeta{
-				Name: userID,
-			},
-			Spec:   core.NamespaceSpec{},
-			Status: core.NamespaceStatus{},
-		})
-		if err != nil {
-			return cloudutil.NullString, cloudutil.NullString, err
-		}
-	}
-	// create deployment manifest for user
-	containerID = cloudutil.NewUUID()
-	object, _ := g.K8SProvider.Manifest().NewDeploymentObject()
-	object.Name = containerID
-	object.Namespace = userID
-	object.Spec.Template.Spec.Containers = []core.Container{{Name: containerID, Image: imageName}}
-	manifest, _ = g.K8SProvider.Manifest().TransformObjectToYaml(object)
-	_, ok := g.K8SProvider.Kubectl().Apply(manifest)
-	if !ok {
-		return cloudutil.NullString, cloudutil.NullString, fmt.Errorf("")
-	}
-	return
-}
-
-func (g ContainerGateway) DeleteByContainerID(userID, containerID string) error {
-	//TODO: user is exist
-	deploymentManifest, err := g.GetDeploymentManifestByContainerID(containerID)
+func (c ContainerGateway) Create(userID, imageName, namespace string) error {
+	err := cloudk8s.IsExistNamespaceOnKubeAPIClient(namespace)
 	if err != nil {
-		return fmt.Errorf("call ContainerGateway.GetDeploymentManifestByContainerID: %w", err)
+		if err == cloudk8s.ErrNamespaceIsNotFound {
+			if err := cloudk8s.CreateNamespaceOnKubeAPIClient(namespace); err != nil {
+				return err
+			}
+		}
+		return err
 	}
-	cloudutil.Logf("[debug] deployment manifest (%s) on ContainerGateway.DeleteByContainerID()\n", deploymentManifest)
-	result, ok := g.K8SProvider.Kubectl().Delete(deploymentManifest)
-	if !ok {
-		cloudutil.Logf("info: kubectl apply result %v\n", result)
-		return fmt.Errorf("call ContainerGateway.DeleteByContainerID: %w", err)
+	//	// create deployment manifest for user
+	appName := cloudutil.NewUUID()
+	// PVC
+	pvc, _ := cloudk8s.GetTemplatePVCObject()
+	pvc.Name = _genPVCName(appName)
+	pvc.Namespace = namespace
+	pvcManifest, _ := cloudk8s.GetManifestFromObject(pvc)
+	pvcManifestPath, _ := cloudutil.CreateTmpManifest(pvcManifest)
+	defer os.Remove(pvcManifestPath)
+	if err := cloudk8s.ExecuteManifestOnKubectl(pvcManifestPath, cloudk8s.APPLY); err != nil {
+		return err
 	}
-	return nil
-}
-
-func (g ContainerGateway) GetDeploymentManifestByContainerID(containerID string) (manifest string, err error) {
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	var doc bson.M
-	if err = g.Mongo.DB().Collection(_collectionName).FindOne(ctx, bson.M{"container_id": containerID}).Decode(&doc); err != nil {
-		return cloudutil.NullString, err
+	if err := cloudk8s.SaveManifestOnKubeAPIClient(pvc.Name, pvcManifest, namespace); err != nil {
+		return err
 	}
-	return doc["manifest"].(string), nil
-}
-
-func (g ContainerGateway) SaveDeploymentManifestByContainerID(containerID, manifest string) error {
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	if _, err := g.Mongo.DB().Collection(_collectionName).InsertOne(ctx, bson.M{
-		"container_id": containerID,
-		"manifest":     manifest,
-	}); err != nil {
+	// Deployment
+	deployment, _ := cloudk8s.GetTemplateDeploymentObject()
+	deployment.Name = _genDeploymentName(appName)
+	deployment.Namespace = namespace
+	deployment.Spec.Template.Spec.Containers = []v1.Container{{
+		Name:                     imageName,
+		Image:                    imageName,
+		Command:                  nil,
+		Args:                     nil,
+		WorkingDir:               "",
+		Ports:                    nil,
+		EnvFrom:                  nil,
+		Env:                      nil,
+		Resources:                v1.ResourceRequirements{},
+		VolumeMounts:             []v1.VolumeMount{},
+		VolumeDevices:            nil,
+		LivenessProbe:            nil,
+		ReadinessProbe:           nil,
+		StartupProbe:             nil,
+		Lifecycle:                nil,
+		TerminationMessagePath:   "",
+		TerminationMessagePolicy: "",
+		ImagePullPolicy:          "",
+		SecurityContext:          nil,
+		Stdin:                    false,
+		StdinOnce:                false,
+		TTY:                      false,
+	}}
+	deployment.Spec.Template.Spec.Volumes = []v1.Volume{{
+		Name:         appName+"-"+"vol",
+		VolumeSource: v1.VolumeSource{
+			PersistentVolumeClaim: &v1.PersistentVolumeClaimVolumeSource{
+				ClaimName: appName+"-"+"pvc",
+				ReadOnly:  false,
+			},
+		},
+	}}
+	deploymentManifest, _ := cloudk8s.GetManifestFromObject(deployment)
+	deploymentManifestPath, _ := cloudutil.CreateTmpManifest(deploymentManifest)
+	defer os.Remove(deploymentManifestPath)
+	if err := cloudk8s.ExecuteManifestOnKubectl(deploymentManifest, cloudk8s.APPLY); err != nil {
+		return err
+	}
+	if err := cloudk8s.SaveManifestOnKubeAPIClient(deployment.Name, deploymentManifest, namespace); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (g ContainerGateway) DeleteDeploymentManifestByContainerID(containerID string) error {
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	if _, err := g.Mongo.DB().Collection(_collectionName).DeleteOne(ctx, bson.M{
-		"container_id": containerID,
-	}); err != nil {
+func (c ContainerGateway) DeleteByContainerID(userID, appName, namespace string) error {
+	pvcName := _genPVCName(appName)
+	deploymentName := _genDeploymentName(appName)
+	pvcManifest, _ := cloudk8s.GetManifestOnKubeAPIClient(pvcName, namespace)
+	pvcManifestPath, _ := cloudutil.CreateTmpManifest(pvcManifest)
+	defer os.Remove(pvcManifestPath)
+	deploymentManifest, _ := cloudk8s.GetManifestOnKubeAPIClient(deploymentName, namespace)
+	deploymentManifestPath, _ := cloudutil.CreateTmpManifest(deploymentManifest)
+	defer os.Remove(deploymentManifestPath)
+	if err := cloudk8s.ExecuteManifestOnKubectl(pvcManifestPath, cloudk8s.DELETE); err != nil {
+		return err
+	}
+	if err := cloudk8s.ExecuteManifestOnKubectl(deploymentManifestPath, cloudk8s.DELETE); err != nil {
+		return err
+	}
+	if err := cloudk8s.DeleteManifestOnKubeAPIClient(pvcName, namespace); err != nil {
+		return err
+	}
+	if err := cloudk8s.DeleteManifestOnKubeAPIClient(deploymentName, namespace); err != nil {
 		return err
 	}
 	return nil
+}
+
+func NewContainerGateway() repository.ContainerRepository {
+	return &ContainerGateway{}
+}
+
+
+func _judgePodCondition(condition v1.ConditionStatus) rpc.ContainerCondition {
+	switch condition {
+	case v1.ConditionTrue:
+		return rpc.ContainerCondition_TRUE
+	case v1.ConditionFalse:
+		return rpc.ContainerCondition_FALSE
+	case v1.ConditionUnknown:
+		return rpc.ContainerCondition_UNKNOWN
+	}
+	return 3
+}
+
+func _genDeploymentName(name string) string {
+	return name+"-"+"dep"
+}
+
+func _genPVCName(name string) string {
+	return name+"-"+"pvc"
 }

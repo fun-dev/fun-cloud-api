@@ -1,13 +1,13 @@
-package container
+package repository
+
+import (
+	"github.com/fun-dev/fun-cloud-protobuf/container/rpc"
+)
 
 // ContainerRepository is interface
-type Repository interface {
+type ContainerRepository interface {
 	// Kubernetes
-	GetAllByUserID(userID string) ([]*Container, error)
-	Create(userID, imageName string) (containerID string, manifest string, err error)
-	DeleteByContainerID(userID, containerID string) error
-	// Store
-	GetDeploymentManifestByContainerID(containerID string) (manifest string, err error)
-	SaveDeploymentManifestByContainerID(containerID, manifest string) error
-	DeleteDeploymentManifestByContainerID(containerID string) error
+	GetAllByUserID(userID, namespace string) ([]*rpc.Container, error)
+	Create(userID, imageName, namespace string) error
+	DeleteByContainerID(userID, containerID, namespace string) error
 }

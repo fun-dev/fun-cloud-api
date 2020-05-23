@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/fun-dev/fun-cloud-api/internal/container/domain/container"
-	"github.com/fun-dev/fun-cloud-api/pkg/auth"
+	"github.com/fun-dev/fun-cloud-api/internal/container/domain/repository"
+	"github.com/fun-dev/fun-cloud-api/pkg/cloudauth"
 )
 
 type (
@@ -11,17 +11,17 @@ type (
 	}
 	// ContainerDeleteInteractor is Interactor
 	ContainerCreateInteractor struct {
-		cRepo container.Repository
-		aRepo auth.Repository
+		cRepo repository.Repository
+		aRepo cloudauth.Repository
 	}
 )
 
-func NewContainerCreateInteractor(cRepo container.Repository, aRepo auth.Repository) ContainerCreateUsecase {
+func NewContainerCreateInteractor(cRepo repository.Repository, aRepo cloudauth.Repository) ContainerCreateUsecase {
 	return &ContainerCreateInteractor{cRepo, aRepo}
 }
 
 func (c ContainerCreateInteractor) Execute(userID, imageName string) error {
-	// in this application, we use userID as kubernetes namespace.yaml
+	// in this application, we use userID as cloudk8s namespace.yaml
 	containerID, manifest, err := c.cRepo.Create(userID, imageName)
 	if err != nil {
 		return err
