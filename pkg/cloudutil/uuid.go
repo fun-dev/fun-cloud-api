@@ -1,4 +1,4 @@
-package uuid
+package cloudutil
 
 import "github.com/google/uuid"
 
