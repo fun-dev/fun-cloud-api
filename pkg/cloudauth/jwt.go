@@ -1,47 +1,37 @@
-package jwt
+package cloudauth
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 )
 
-// Validate
-// Confirm
-// Inspect
-type (
-	IJwt interface {
-		InspectGoogleIdToken(accessToken string) (*Claim, error)
-	}
-	Jwt struct{}
+var (
+	_googleOAuthTokeninfoURL       = "https://www.googleapis.com/oauth2/v3/tokeninfo"
+	ErrRetrieveTokeninfoFromGoogle = errors.New("failed retrieve tokeninfo from google token")
+	ErrUnmarshalGoogleResponseBody = errors.New("failed unmarshal google response body")
 )
 
-func NewJwt() IJwt {
-	return &Jwt{}
-}
-
-func (j *Jwt) InspectGoogleIdToken(accessToken string) (*Claim, error) {
-	req, _ := http.NewRequest("GET", "https://www.googleapis.com/oauth2/v3/tokeninfo", nil)
+func InspectGoogleIdToken(token string) (*Claim, error) {
+	req, _ := http.NewRequest("GET", _googleOAuthTokeninfoURL, nil)
 	q := req.URL.Query()
-	q.Add("id_token", accessToken)
+	q.Add("id_token", token)
 	req.URL.RawQuery = q.Encode()
-	//fmt.Printf("debug: %v", req.RequestURI)
 	resp, err := http.Get(req.URL.String())
 	if err != nil {
-		//TODO: implements error handling
-		return nil, err
+		return nil, ErrRetrieveTokeninfoFromGoogle
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	result := &Claim{}
+	result := Claim{}
 	if err := json.Unmarshal(body, &result); err != nil {
-		//TODO: implements error handling
-		return nil, err
+		return nil, ErrUnmarshalGoogleResponseBody
 	}
-	return result, nil
+	return &result, nil
 }
 
 type Claim struct {

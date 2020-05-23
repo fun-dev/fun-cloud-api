@@ -1,6 +1,8 @@
-package jwt
+package cloudauth
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestJwt_InspectGoogleIdToken(t *testing.T) {
 	j := NewJwt()
