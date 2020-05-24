@@ -40,7 +40,7 @@ func (c ContainerGateway) Create(userID, imageName, namespace string) error {
 		}
 		return err
 	}
-	//	// create deployment manifest for user
+	// create deployment manifest for user
 	appName := cloudutil.NewUUID()
 	// PVC
 	pvc, _ := cloudk8s.GetTemplatePVCObject()
