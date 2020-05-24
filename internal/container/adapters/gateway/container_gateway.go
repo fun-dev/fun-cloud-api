@@ -13,7 +13,7 @@ import (
 type ContainerGateway struct {}
 
 func (c ContainerGateway) GetAllByUserID(userID, namespace string) ([]*rpc.Container, error) {
-	pods, err := cloudk8s.GetPodsOnKubeAPIClient(userID)
+	pods, err := cloudk8s.GetPodsOnKubeAPIClient(namespace)
 	if err != nil {
 		return nil, err
 	}
