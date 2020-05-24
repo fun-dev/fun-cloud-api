@@ -58,6 +58,8 @@ github.com/fsnotify/fsnotify v1.4.9 h1:hsms1Qyu0jgnwNXIxa+/V/PDsU6CfLf6CNO8H7IWo
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
 github.com/fun-dev/fun-cloud-protobuf v0.0.0-20200523091810-0172c2135461 h1:1nIHEucEp+bx68EMGbCzQ1brT5FRUPWSWTOXRXt7g7A=
 github.com/fun-dev/fun-cloud-protobuf v0.0.0-20200523091810-0172c2135461/go.mod h1:CXsbLicijPiNJ6pEuFyLf3QuFqGaMW+EHOQMkQJnLuA=
+github.com/fun-dev/fun-cloud-protobuf v0.0.0-20200524104820-9a4d807fc2cd h1:5P/sWzYthyaMlm7tFBGwbeflQ1jdm4VXV5omWwQGGws=
+github.com/fun-dev/fun-cloud-protobuf v0.0.0-20200524104820-9a4d807fc2cd/go.mod h1:CXsbLicijPiNJ6pEuFyLf3QuFqGaMW+EHOQMkQJnLuA=
 github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=
