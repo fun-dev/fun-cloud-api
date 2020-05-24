@@ -34,3 +34,14 @@ func ExecuteManifestOnKubectl(manifestPath string, option KubectlOption) error {
 	}
 	return nil
 }
+
+func ExecuteListCmdOnKubectl(dirPath, containerName, namespace string) (string, error) {
+	result, err := exec.Command(_kubectlBinaryPath,
+		"-n", namespace,
+		"exec", containerName, "--", "ls", "-p", "-1", dirPath,
+	).Output()
+	if err != nil {
+		return "", err
+	}
+	return string(result), nil
+}

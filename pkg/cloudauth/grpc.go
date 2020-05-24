@@ -12,6 +12,7 @@ import (
 )
 
 var (
+	ContextKeyUserID = "USER_ID"
 	// APP Error
 	ErrRetrieveMetadataFromContext = errors.New("failed retrieve metadata from context")
 	// GRPC Error
