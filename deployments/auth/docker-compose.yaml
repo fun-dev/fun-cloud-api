@@ -1,0 +1,33 @@
+version: '3.3'
+services:
+  fcp_auth_api:
+    container_name: "fcp_auth_api"
+    build:
+      context: ../../
+      dockerfile: ./build/auth/Dockerfile.dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ..:/fun-cloud-api
+    external_links:
+      - fcp_container_api
+      - fcp_data_api
+      - fcp_directory_api
+      - fcp_image_api
+  fcp_auth_store:
+    image: mysql:5.7
+    container_name: fcp_auth_store
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cloudauth
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - fcp_auth_store_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+volumes:
+  fcp_auth_store_data:
+    driver: local
