@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fun-dev/fun-cloud-api/internal/auth/model"
+	"github.com/fun-dev/fun-cloud-api/internal/auth/store_model"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
@@ -23,7 +23,11 @@ func main() {
 
 	db.LogMode(true)
 
-	if err := db.AutoMigrate(&model.Scope{}, &model.Role{}).Error; err != nil {
+	if err := db.AutoMigrate(&store_model.Scope{}, &store_model.Role{}).Error; err != nil {
+		log.Fatal(err)
+	}
+
+	if err := db.AutoMigrate(&store_model.User{}).Error; err != nil {
 		log.Fatal(err)
 	}
 }

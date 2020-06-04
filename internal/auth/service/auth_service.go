@@ -1,37 +1,37 @@
 package service
 
 import (
-	"github.com/fun-dev/fun-cloud-api/pkg/cloudauth"
-	"github.com/fun-dev/fun-cloud-api/pkg/cloudutil"
-	"github.com/gin-gonic/gin"
-	"net/http"
+	"context"
+	"github.com/fun-dev/fun-cloud-protobuf/auth/rpc"
+	"github.com/golang/protobuf/ptypes/empty"
 )
 
-type (
-	AuthController struct {
-		Jwt cloudauth.IJwt
-	}
+type AuthService struct {}
 
-	IAuthController interface {
-		TokenValidate(c *gin.Context)
-	}
-)
-
-func NewAuthController() IAuthController {
-	return &AuthController{}
+func (a AuthService) GetUserInfo(ctx context.Context, empty *empty.Empty) (*rpc.GetUserInfoResponse, error) {
+	panic("implement me")
 }
 
-func (ac AuthController) TokenValidate(c *gin.Context) {
-	accessToken := c.GetHeader("Authorization")
-	if accessToken == cloudutil.NullString {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "please set access token on the header"})
-		return
+func (a AuthService) SignIn(ctx context.Context, request *rpc.SignInRequest) (*rpc.SignInResponse, error) {
+	authType := request.AuthType
+	switch authType {
+	// Add Password Verification
+	case rpc.AuthType_BASIC:
+	case rpc.AuthType_GOOGLE_OAUTH:
+	default:
+
 	}
-	_, err := ac.Jwt.InspectGoogleIdToken(accessToken)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "your access token is invalid"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"message": "your access token is valid"})
-	return
+	panic("implement me")
+}
+
+func (a AuthService) SignOut(ctx context.Context, empty *empty.Empty) (*empty.Empty, error) {
+	panic("implement me")
+}
+
+func (a AuthService) SignUp(ctx context.Context, request *rpc.SignUpRequest) (*rpc.SignUpResponse, error) {
+	panic("implement me")
+}
+
+func NewAuthService() rpc.AuthServiceServer {
+	return &AuthService{}
 }

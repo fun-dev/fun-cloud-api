@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/fun-dev/fun-cloud-api/internal/auth/controller"
+	"github.com/fun-dev/fun-cloud-api/internal/auth/service"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
 func main() {
 	// Init Controller
-	authMockCtrl := controller.NewAuthMockController()
-	authCtrl := controller.NewAuthController()
+	authMockCtrl := service.NewAuthMockController()
+	authCtrl := service.NewAuthController()
 	// setup routing
 	router := gin.Default()
 	mock := router.Group("/mock")
