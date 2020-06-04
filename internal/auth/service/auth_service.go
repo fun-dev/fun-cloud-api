@@ -1,4 +1,4 @@
-package controller
+package service
 
 import (
 	"github.com/fun-dev/fun-cloud-api/pkg/cloudauth"

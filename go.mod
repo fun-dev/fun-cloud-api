@@ -7,7 +7,7 @@ require (
 	github.com/cosmtrek/air v1.12.1 // indirect
 	github.com/creack/pty v1.1.11 // indirect
 	github.com/fatih/color v1.9.0 // indirect
-	github.com/fun-dev/fun-cloud-protobuf v0.0.0-20200524104820-9a4d807fc2cd
+	github.com/fun-dev/fun-cloud-protobuf v0.0.0-20200604101959-693d333f2228
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-redis/redis/v7 v7.0.0-beta.4
