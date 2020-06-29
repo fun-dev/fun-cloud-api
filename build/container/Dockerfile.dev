@@ -1,5 +1,5 @@
 FROM docker:dind
-RUN apk --no-cache add curl wget git make musl-dev go=1.13.4-r1
+RUN apk update && apk --no-cache add curl wget git make musl-dev go
 # --- setup kubernetes part ---
 RUN curl -sLo /usr/local/bin/kubectl 'https://storage.googleapis.com/kubernetes-release/release/v1.17.0/bin/linux/amd64/kubectl' && chmod +x /usr/local/bin/kubectl
 RUN curl -Lo /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.6.1/kind-$(uname)-amd64 && chmod +x /usr/local/bin/kind
@@ -7,9 +7,9 @@ RUN curl -Lo /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/release
 ENV GOROOT /usr/lib/go
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
-# --- container service part
+# --- container service ---
 WORKDIR /fun-cloud-api
 COPY . .
-# --- download realize (hot reload) part ---
-RUN go get gopkg.in/urfave/cli.v2@master && go get github.com/oxequa/realize
+# --- download air  ---
+RUN go get -u github.com/cosmtrek/air
 EXPOSE 3000
