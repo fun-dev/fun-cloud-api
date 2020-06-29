@@ -7,9 +7,13 @@ RUN curl -Lo /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/release
 ENV GOROOT /usr/lib/go
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
-# --- container service ---
+
+# --- Container Service ---
 WORKDIR /fun-cloud-api
 COPY . .
-# --- download air  ---
+# --- Download Air  ---
 RUN go get -u github.com/cosmtrek/air
 EXPOSE 3000
+# --- Environment Variable --- 
+ENV AIR_CONF_PATH=/fun-cloud-api/deployments/container/air.conf
+CMD ["air", "-c", "/fun-cloud-api/deployments/container/air.conf"]
