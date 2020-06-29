@@ -46,12 +46,8 @@
 |  GET   | /v1/container_images |   RESTFUL   |
 | DELETE | /v1/container_images |   RESTFUL   |
 
-## Requirement (要件)
-### Installation (設置)
-#### Tool (ツール)
-- Docker
-- Docker-Compose
-#### KUBECONFIG
-- 環境変数の設定: `$KUBECONFIG`にパスを指定
 ---
-### Deployment (起動)
+## Other 
+- [Commit Rules](./docs/commit_rules.md)
+- [Branch Rules](./docs/branch_rules.md)
+- [Issue](./docs/issue_rules.md)
